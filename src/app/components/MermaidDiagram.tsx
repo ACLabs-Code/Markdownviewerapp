@@ -77,7 +77,13 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
             </h4>
             <p
               className="text-sm text-red-600 dark:text-red-400 mt-1"
-              style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'normal',
+                display: 'block',
+                width: '100%',
+              }}
             >
               {error.message}
             </p>
