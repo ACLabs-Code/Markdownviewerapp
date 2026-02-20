@@ -75,14 +75,20 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
             <h4 className="font-semibold text-red-800 dark:text-red-200 text-sm">
               Invalid Mermaid Syntax
             </h4>
-            <p className="text-sm text-red-600 dark:text-red-400 mt-1 break-words overflow-wrap-anywhere">
+            <p
+              className="text-sm text-red-600 dark:text-red-400 mt-1"
+              style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+            >
               {error.message}
             </p>
             <details className="mt-2">
               <summary className="cursor-pointer text-sm text-red-700 dark:text-red-300 hover:underline">
                 Show diagram code
               </summary>
-              <pre className="mt-2 p-2 bg-red-100 dark:bg-red-950 rounded text-xs overflow-x-auto font-mono whitespace-pre-wrap break-words">
+              <pre
+                className="mt-2 p-2 bg-red-100 dark:bg-red-950 rounded text-xs overflow-x-auto font-mono"
+                style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
+              >
                 {chart}
               </pre>
             </details>
