@@ -52,6 +52,17 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
         console.error('Mermaid rendering error:', err);
         setError(err as Error);
         setSvg('');
+
+        // Clean up any error elements Mermaid added to the DOM
+        setTimeout(() => {
+          const allDivs = document.querySelectorAll('div');
+          allDivs.forEach((el) => {
+            const text = el.textContent || '';
+            if (text.includes('Syntax error in text') && text.includes('mermaid version')) {
+              el.remove();
+            }
+          });
+        }, 100);
       }
     };
 
