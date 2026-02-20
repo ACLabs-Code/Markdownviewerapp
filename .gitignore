@@ -12,9 +12,6 @@ vite.config.d.ts
 # Notes/plans
 notes/
 
-# Lock files
-package-lock.json
-
 # Logs
 logs
 *.log
