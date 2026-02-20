@@ -67,6 +67,14 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 - Inline code styled with pink accent colors
 - Dark theme always used for code blocks regardless of app theme
 
+**Mermaid Diagram Support:**
+- Code blocks with `language-mermaid` are rendered as diagrams
+- `MermaidDiagram` component (src/app/components/MermaidDiagram.tsx) handles rendering
+- Automatically syncs with app theme (light/dark) via `useTheme()` hook
+- Client-side only rendering to prevent SSR issues
+- Error handling shows user-friendly messages for invalid syntax
+- Supports all Mermaid diagram types: flowchart, sequence, class, state, git graph, etc.
+
 ## Key Technical Details
 
 ### Project Origin
@@ -98,6 +106,9 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 ### File Organization
 - `src/main.tsx` - Entry point
 - `src/app/App.tsx` - Main component (395 lines, file handling, state management, UI layout)
-- `src/app/components/MarkdownViewer.tsx` - Pure presentational component for rendering
+- `src/app/components/MarkdownViewer.tsx` - Pure presentational component for rendering markdown
+- `src/app/components/MermaidDiagram.tsx` - Mermaid diagram renderer with theme support
+- `src/app/components/ThemeToggle.tsx` - Theme switcher component
+- `src/app/components/ThemedToaster.tsx` - Toast notifications with theme sync
 - `src/app/components/ui/` - shadcn/ui components (mostly unused boilerplate)
 - `src/styles/` - Tailwind v4 config and theme variables
