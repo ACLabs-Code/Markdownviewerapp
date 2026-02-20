@@ -6,6 +6,9 @@ dist/
 dist-ssr/
 *.local
 
+# Notes/plans
+notes/
+
 # Lock files
 package-lock.json
 
