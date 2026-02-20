@@ -29,18 +29,15 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
           startOnLoad: false,
           theme: resolvedTheme === 'dark' ? 'dark' : 'default',
           securityLevel: 'loose',
-          fontFamily: 'inherit',
+          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          fontSize: 16,
           flowchart: {
+            htmlLabels: true,
             useMaxWidth: true,
-            htmlLabels: false,
             curve: 'basis',
-            padding: 20,
-            nodeSpacing: 50,
-            rankSpacing: 50,
-            wrappingWidth: 200,
           },
           themeVariables: {
-            fontSize: '14px',
+            fontSize: '16px',
           },
         });
 
