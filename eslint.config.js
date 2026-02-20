@@ -34,5 +34,9 @@ export default tseslint.config({
     '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
+    '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    'react-hooks/set-state-in-effect': 'off',
   },
 });

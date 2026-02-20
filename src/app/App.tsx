@@ -194,7 +194,7 @@ export default function App() {
     if (files && files.length > 0) {
       const file = files[0];
 
-      if (!(/\.(md|markdown|txt)$/.exec(file.name.toLowerCase()))) {
+      if (!/\.(md|markdown|txt)$/.exec(file.name.toLowerCase())) {
         toast.error('Please drop a Markdown file (.md, .markdown, .txt)');
         return;
       }
@@ -319,12 +319,13 @@ export default function App() {
                   <button
                     onClick={toggleWatch}
                     disabled={isLegacyMode}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isLegacyMode
-                      ? 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed'
-                      : isWatching
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                        : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                      }`}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      isLegacyMode
+                        ? 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed'
+                        : isWatching
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                          : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                    }`}
                     title={
                       isLegacyMode
                         ? 'Auto-watch unavailable in this environment'
@@ -342,10 +343,11 @@ export default function App() {
                   <button
                     onClick={handleManualReload}
                     disabled={isLegacyMode}
-                    className={`p-2 transition-colors rounded-full ${isLegacyMode
-                      ? 'text-zinc-300 dark:text-zinc-700 cursor-not-allowed'
-                      : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                      }`}
+                    className={`p-2 transition-colors rounded-full ${
+                      isLegacyMode
+                        ? 'text-zinc-300 dark:text-zinc-700 cursor-not-allowed'
+                        : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                    }`}
                     title={isLegacyMode ? 'Reload unavailable' : 'Reload file'}
                   >
                     <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
