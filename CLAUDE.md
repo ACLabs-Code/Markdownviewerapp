@@ -87,6 +87,7 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 - Error message uses inline styles for guaranteed text wrapping (`wordBreak`, `overflowWrap`, `whiteSpace`)
 - Collapsible `<details>` section shows raw diagram code for debugging
 - Styled to match app's design system (zinc colors, rounded corners)
+- DOM cleanup removes Mermaid's error footer ("Syntax error in text mermaid version X.X.X") from page bottom
 
 ## Key Technical Details
 
