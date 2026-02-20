@@ -28,8 +28,13 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
         mermaid.initialize({
           startOnLoad: false,
           theme: resolvedTheme === 'dark' ? 'dark' : 'default',
-          securityLevel: 'strict',
+          securityLevel: 'loose',
           fontFamily: 'inherit',
+          flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis',
+          },
         });
 
         // Generate unique ID for this diagram
