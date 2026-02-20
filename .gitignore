@@ -38,6 +38,8 @@ lerna-debug.log*
 # Testing
 coverage/
 *.lcov
+test-screenshots/
+test_mermaid_rendering.py
 
 # Temporary files
 *.tmp
