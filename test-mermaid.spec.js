@@ -63,7 +63,7 @@ async function testMermaidRendering() {
           console.log(`SVG dimensions: ${Math.round(bbox1.width)}x${Math.round(bbox1.height)}`);
           await page.screenshot({
             path: 'test-screenshots/03-flowchart.png',
-            clip: bbox1
+            clip: bbox1,
           });
         }
 
@@ -89,7 +89,7 @@ async function testMermaidRendering() {
             console.log(`SVG dimensions: ${Math.round(bbox2.width)}x${Math.round(bbox2.height)}`);
             await page.screenshot({
               path: 'test-screenshots/04-sequence.png',
-              clip: bbox2
+              clip: bbox2,
             });
           }
         }
@@ -103,7 +103,7 @@ async function testMermaidRendering() {
             console.log(`SVG dimensions: ${Math.round(bbox4.width)}x${Math.round(bbox4.height)}`);
             await page.screenshot({
               path: 'test-screenshots/05-state.png',
-              clip: bbox4
+              clip: bbox4,
             });
           }
         }
@@ -117,7 +117,7 @@ async function testMermaidRendering() {
             console.log(`SVG dimensions: ${Math.round(bbox5.width)}x${Math.round(bbox5.height)}`);
             await page.screenshot({
               path: 'test-screenshots/06-gitgraph.png',
-              clip: bbox5
+              clip: bbox5,
             });
           }
         }
@@ -145,7 +145,6 @@ async function testMermaidRendering() {
     } else {
       console.log('❌ No file input found - app may be in File System Access API only mode');
     }
-
   } catch (error) {
     console.error('❌ Error during test:', error);
   } finally {
