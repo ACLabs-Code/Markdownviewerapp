@@ -71,9 +71,22 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 - Code blocks with `language-mermaid` are rendered as diagrams
 - `MermaidDiagram` component (src/app/components/MermaidDiagram.tsx) handles rendering
 - Automatically syncs with app theme (light/dark) via `useTheme()` hook
-- Client-side only rendering to prevent SSR issues
-- Error handling shows user-friendly messages for invalid syntax
+- Client-side only rendering to prevent SSR issues (uses `mounted` state)
+- Error handling shows user-friendly messages with proper text wrapping for invalid syntax
 - Supports all Mermaid diagram types: flowchart, sequence, class, state, git graph, etc.
+
+**Mermaid Configuration:**
+- Uses `htmlLabels: true` for proper text measurement and rendering
+- Security level: `'loose'` to enable HTML labels
+- Theme mapping: `dark` mode → `'dark'`, light mode → `'default'`
+- Font family: `'ui-sans-serif, system-ui, sans-serif'` for consistent rendering
+- CSS overrides in src/styles/index.css prevent SVG text clipping
+
+**Error Component:**
+- Displays red error box with AlertCircle icon for invalid Mermaid syntax
+- Error message uses inline styles for guaranteed text wrapping (`wordBreak`, `overflowWrap`, `whiteSpace`)
+- Collapsible `<details>` section shows raw diagram code for debugging
+- Styled to match app's design system (zinc colors, rounded corners)
 
 ## Key Technical Details
 

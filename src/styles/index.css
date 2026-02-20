@@ -1,3 +1,18 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Mermaid diagram styles */
+.mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-container .nodeLabel,
+.mermaid-container .edgeLabel {
+  overflow: visible !important;
+}
+
+.mermaid-container foreignObject {
+  overflow: visible !important;
+}
