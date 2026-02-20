@@ -32,14 +32,15 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
           fontFamily: 'inherit',
           flowchart: {
             useMaxWidth: true,
-            htmlLabels: true,
+            htmlLabels: false,
             curve: 'basis',
-            padding: 15,
+            padding: 20,
             nodeSpacing: 50,
             rankSpacing: 50,
+            wrappingWidth: 200,
           },
           themeVariables: {
-            fontSize: '16px',
+            fontSize: '14px',
           },
         });
 
