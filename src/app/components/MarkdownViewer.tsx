@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { MermaidDiagram } from './MermaidDiagram';
 
 interface MarkdownViewerProps {
   content: string;
@@ -17,17 +18,31 @@ export function MarkdownViewer({ content }: MarkdownViewerProps) {
           components={{
             code({ node, inline, className, children, ...props }: any) {
               const match = /language-(\w+)/.exec(className || '');
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  {...props}
-                  style={vscDarkPlus}
-                  language={match[1]}
-                  PreTag="div"
-                  className="rounded-md !bg-[#1e1e1e] !p-4 !my-4"
-                >
-                  {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>
-              ) : (
+
+              if (!inline && match) {
+                const language = match[1];
+
+                // Handle Mermaid diagrams
+                if (language === 'mermaid') {
+                  return <MermaidDiagram chart={String(children).replace(/\n$/, '')} />;
+                }
+
+                // Handle regular code blocks
+                return (
+                  <SyntaxHighlighter
+                    {...props}
+                    style={vscDarkPlus}
+                    language={language}
+                    PreTag="div"
+                    className="rounded-md !bg-[#1e1e1e] !p-4 !my-4"
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                );
+              }
+
+              // Inline code
+              return (
                 <code {...props} className={`${className} bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-sm font-mono text-pink-600 dark:text-pink-400`}>
                   {children}
                 </code>
