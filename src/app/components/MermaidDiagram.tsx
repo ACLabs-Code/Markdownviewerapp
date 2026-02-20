@@ -34,6 +34,12 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
             useMaxWidth: true,
             htmlLabels: true,
             curve: 'basis',
+            padding: 15,
+            nodeSpacing: 50,
+            rankSpacing: 50,
+          },
+          themeVariables: {
+            fontSize: '16px',
           },
         });
 
@@ -91,7 +97,11 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
   // Success state - render the diagram
   return (
     <div className="rounded-md bg-white dark:bg-zinc-900 p-4 my-4 border border-zinc-200 dark:border-zinc-800 overflow-x-auto transition-colors duration-300">
-      <div dangerouslySetInnerHTML={{ __html: svg }} />
+      <div
+        className="mermaid-container"
+        style={{ minHeight: '200px' }}
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
     </div>
   );
 }
