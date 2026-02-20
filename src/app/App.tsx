@@ -386,7 +386,7 @@ export default function App() {
               <Github size={16} />
               <span>GitHub Flavored Markdown Supported</span>
           </div>
-          <p>© {new Date().getFullYear()} Markdown Viewer</p>
+          <p>Made with ❤️ by AC Labs</p>
         </footer>
       </div>
     </ThemeProvider>
