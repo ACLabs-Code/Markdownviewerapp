@@ -8,6 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm i              # Install dependencies
 npm run dev        # Start Vite development server
 npm run build      # Build production bundle
+npm run lint       # Run ESLint checks
+npm run format     # Format code with Prettier
+npm run typecheck  # Run TypeScript type checking
 ```
 
 ## Architecture Overview
@@ -125,12 +128,41 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 - App gracefully degrades to legacy file input mode
 - Test modern features with: `if ('showOpenFilePicker' in window)`
 
-### Missing Configurations
+### Tooling Configuration
 
-- No tsconfig.json (TypeScript files present but no config)
-- No ESLint or Prettier setup
-- No testing framework configured
-- Consider adding these for better developer experience
+**TypeScript:**
+- `tsconfig.json` - Main TypeScript configuration
+- `tsconfig.node.json` - Node.js environment config for Vite
+
+**Code Quality:**
+- `eslint.config.js` - ESLint 9.x with flat config format
+  - TypeScript support via typescript-eslint
+  - React hooks and React refresh rules
+  - Type-aware linting enabled
+- `.prettierrc` - Prettier code formatting configuration
+
+**Testing:**
+- Playwright (`@playwright/test` v1.58.2) installed as dev dependency
+- Manual test file exists: `test-mermaid.spec.js`
+- Not yet integrated into npm scripts (no `npm test` command)
+
+### CI/CD Pipeline
+
+**Location:** `.github/workflows/ci.yml`
+
+**Workflow Configuration:**
+- Triggers on pull request events (opened, synchronize, reopened)
+- Does NOT run on direct pushes to main (only on PRs)
+- Uses Node.js 24.x (LTS) in GitHub Actions runners
+- Uses `actions/checkout@v6` and `actions/setup-node@v6`
+
+**Jobs (Run in Parallel):**
+1. **lint** - Runs `npm run lint` (ESLint)
+2. **format-check** - Runs `npm run format -- --check` (Prettier validation)
+3. **typecheck** - Runs `npm run typecheck` (TypeScript)
+4. **build** - Runs `npm run build` (Production build verification)
+
+All jobs run independently in parallel for faster feedback. NPM dependency caching enabled for performance.
 
 ### File Organization
 
