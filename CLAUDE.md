@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**⚠️ IMPORTANT: Keep this file updated!**
+When you make changes to the project (new features, configuration changes, architectural decisions, workflow updates, etc.), update the relevant sections in this file. This ensures future development sessions have accurate context.
+
 ## Development Commands
 
 ```bash
