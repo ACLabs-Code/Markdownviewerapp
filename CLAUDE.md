@@ -13,6 +13,30 @@ npm run format     # Format code with Prettier
 npm run typecheck  # Run TypeScript type checking
 ```
 
+## Build Configuration
+
+### Base Path for Deployments
+
+The app uses a configurable base path to support both root and subdirectory deployments:
+
+**Configuration:** `vite.config.ts`
+- Uses `BASE_PATH` environment variable
+- Defaults to `'/'` for root deployments
+
+**Usage:**
+```bash
+# Default: build for root path (custom domains, Netlify, Vercel)
+npm run build
+
+# GitHub Pages: build for subdirectory
+BASE_PATH=/Markdownviewerapp/ npm run build
+```
+
+**GitHub Pages Deployment:**
+- The `deploy.yml` workflow automatically sets `BASE_PATH=/Markdownviewerapp/`
+- Ensures assets load from correct subdirectory path
+- Local development always uses root path
+
 ## Architecture Overview
 
 ### Dual-Mode File Loading Pattern
