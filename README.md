@@ -4,6 +4,10 @@ A modern, browser-based markdown viewer designed for local development and readi
 
 Edit your markdown files in your favorite editor while MarkdownViewer automatically refreshes in your browser, giving you instant visual feedback as you write. Perfect for drafting documentation, README files, or any markdown content. Also serves as a clean, distraction-free way to read rendered markdown files.
 
+## Live Demo
+
+🚀 **[Try the app online](https://aclabs-code.github.io/Markdownviewerapp)** - No installation required!
+
 ## Features
 
 - **Preview Markdown files** with GitHub Flavored Markdown support
