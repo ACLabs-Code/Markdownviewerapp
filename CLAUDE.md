@@ -175,7 +175,7 @@ All jobs use Node.js 24.x (LTS) and npm caching for performance.
 **What it does:**
 - Builds production bundle (`npm run build`)
 - Deploys `dist/` directory to `gh-pages` branch
-- Publishes app to GitHub Pages at `https://acockrell.github.io/Markdownviewerapp`
+- Publishes app to GitHub Pages at `https://aclabs-code.github.io/Markdownviewerapp`
 
 **Permissions:** Requires `contents: write` for gh-pages branch push
 
