@@ -1,0 +1,36 @@
+name: Bundle Size Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-size:
+    name: Check Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Check compressed size
+        uses: preactjs/compressed-size-action@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: './dist/**/*.{js,css,html}'
+          exclude: '{./dist/**/*.map,./dist/**/node_modules/**}'

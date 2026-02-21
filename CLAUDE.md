@@ -148,13 +148,15 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 
 ### CI/CD Pipeline
 
-**Location:** `.github/workflows/ci.yml`
+**Location:** `.github/workflows/`
 
-**Workflow Configuration:**
-- Triggers on pull request events (opened, synchronize, reopened)
-- Does NOT run on direct pushes to main (only on PRs)
-- Uses Node.js 24.x (LTS) in GitHub Actions runners
-- Uses `actions/checkout@v6` and `actions/setup-node@v6`
+The project has four GitHub Actions workflows:
+
+#### 1. ci.yml - Pull Request Checks
+
+**Triggers:**
+- Pull request events (opened, synchronize, reopened)
+- Does NOT run on direct pushes to main
 
 **Jobs (Run in Parallel):**
 1. **lint** - Runs `npm run lint` (ESLint)
@@ -162,7 +164,48 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 3. **typecheck** - Runs `npm run typecheck` (TypeScript)
 4. **build** - Runs `npm run build` (Production build verification)
 
-All jobs run independently in parallel for faster feedback. NPM dependency caching enabled for performance.
+All jobs use Node.js 24.x (LTS) and npm caching for performance.
+
+#### 2. deploy.yml - GitHub Pages Deployment
+
+**Triggers:**
+- Push to `main` branch
+- Manual via `workflow_dispatch`
+
+**What it does:**
+- Builds production bundle (`npm run build`)
+- Deploys `dist/` directory to `gh-pages` branch
+- Publishes app to GitHub Pages at `https://acockrell.github.io/Markdownviewerapp`
+
+**Permissions:** Requires `contents: write` for gh-pages branch push
+
+#### 3. security.yml - Security Audit
+
+**Triggers:**
+- Weekly schedule (Mondays at 9am UTC)
+- Pull requests
+- Manual via `workflow_dispatch`
+
+**What it does:**
+- Runs `npm audit --audit-level=moderate`
+- Detects dependency vulnerabilities
+- Uploads audit results as artifacts
+- Fails if moderate+ severity issues found
+
+#### 4. bundle-size.yml - Bundle Size Monitoring
+
+**Triggers:**
+- Pull requests
+- Push to `main` branch
+
+**What it does:**
+- Calculates gzipped size of built assets in `dist/`
+- Compares bundle size with base branch on PRs
+- Comments on PRs with size differences
+- Tracks historical bundle size on main branch
+- Current baseline: ~3.8MB uncompressed
+
+**Uses:** `preactjs/compressed-size-action@v2` for size analysis
 
 ### File Organization
 
