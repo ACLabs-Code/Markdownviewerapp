@@ -28,6 +28,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          BASE_PATH: /Markdownviewerapp/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
