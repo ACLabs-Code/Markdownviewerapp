@@ -41,6 +41,19 @@ export interface IFileProvider {
    * Check if platform supports file watching
    */
   supportsWatching(): boolean;
+
+  /**
+   * Get metadata for an open file handle
+   * @param handle - Platform-specific file handle
+   * @returns File name, optional path, and optional last-modified timestamp (ms)
+   */
+  getFileMetadata(handle: FileHandle): Promise<{ name: string; path?: string; lastModified?: number }>;
+
+  /**
+   * Check whether a file handle is still accessible (e.g. not deleted/unmounted)
+   * @param handle - Platform-specific file handle
+   */
+  isFileAccessible(handle: FileHandle): Promise<boolean>;
 }
 
 /**
@@ -50,8 +63,18 @@ export interface IFileWatcher {
   /**
    * Watch a file for changes
    * @param handle - Platform-specific file handle
-   * @param onChanged - Callback when file changes (receives new content)
+   * @param onChanged - Callback when file changes; receives new content and metadata
+   * @param options - Platform-specific options (pollInterval for web, debounceMs for Electron/VSCode)
    * @returns Cleanup function to stop watching
    */
-  watch(handle: FileHandle, onChanged: (content: string) => void): () => void;
+  watch(
+    handle: FileHandle,
+    onChanged: (content: string, metadata: { lastModified: number }) => void,
+    options?: { pollInterval?: number; debounceMs?: number }
+  ): () => void;
+
+  /**
+   * Check whether a handle is currently being watched
+   */
+  isWatching(handle: FileHandle): boolean;
 }
