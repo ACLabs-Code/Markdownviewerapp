@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config({
-  ignores: ['dist', 'node_modules', '.claude'],
+  ignores: ['**/dist/**', '**/*.d.ts', 'node_modules', '.claude', 'packages/platform-adapters/**'],
   extends: [
     js.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
@@ -16,7 +16,12 @@ export default tseslint.config({
     ecmaVersion: 2020,
     globals: globals.browser,
     parserOptions: {
-      project: ['./tsconfig.json', './tsconfig.node.json'],
+      project: [
+        './tsconfig.json',
+        './tsconfig.node.json',
+        './packages/core/tsconfig.json',
+        './packages/web/tsconfig.json',
+      ],
       tsconfigRootDir: import.meta.dirname,
     },
   },
