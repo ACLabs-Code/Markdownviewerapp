@@ -40,7 +40,7 @@ jobs:
         run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Run security audit
-        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm audit --audit-level=moderate' || 'npm audit --production --audit-level=moderate' }}
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm audit --audit-level=moderate --prod' || 'npm audit --production --audit-level=moderate' }}
 
       - name: Upload audit results
         if: always()

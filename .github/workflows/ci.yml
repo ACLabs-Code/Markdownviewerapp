@@ -71,7 +71,7 @@ jobs:
         run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Check formatting
-        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm run format -- --check' || 'npm run format -- --check' }}
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm exec prettier --check .' || 'npm run format -- --check' }}
 
   typecheck:
     name: Type Check
@@ -108,6 +108,7 @@ jobs:
         run: |
           if [ "${{ steps.detect.outputs.monorepo }}" = "true" ]; then
             pnpm run typecheck
+            pnpm --filter @mdviewer/core build
             pnpm --filter @mdviewer/platform-adapters typecheck
             pnpm --filter @mdviewer/web typecheck
           else
