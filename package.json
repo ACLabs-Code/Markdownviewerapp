@@ -1,5 +1,5 @@
 {
-  "name": "markdown-viewer",
+  "name": "markdown-viewer-monorepo",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -8,7 +8,13 @@
     "dev": "vite",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:web": "pnpm --filter @mdviewer/web dev",
+    "build:web": "pnpm --filter @mdviewer/web build",
+    "build:all": "pnpm -r --filter './packages/*' build",
+    "lint:all": "pnpm -r --parallel lint",
+    "typecheck:all": "pnpm -r --parallel typecheck",
+    "format:all": "pnpm -r --parallel format"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "2.1.16",
