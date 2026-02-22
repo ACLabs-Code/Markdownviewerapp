@@ -36,6 +36,7 @@ Markdownviewerapp/
 All platforms implement these interfaces:
 
 ### IFileProvider
+
 ```typescript
 interface IFileProvider {
   openFilePicker(): Promise<FileMetadata | null>;
@@ -45,6 +46,7 @@ interface IFileProvider {
 ```
 
 ### IFileWatcher
+
 ```typescript
 interface IFileWatcher {
   watch(handle: FileHandle, onChanged: (content: string) => void): () => void;
@@ -52,6 +54,7 @@ interface IFileWatcher {
 ```
 
 **Implementations**:
+
 - **Web**: FileSystemAccess API + polling (current behavior)
 - **Electron**: Node.js `fs` + chokidar file watching
 - **VSCode**: VSCode workspace API + native file system watchers
@@ -75,17 +78,20 @@ interface IFileWatcher {
 1. ✅ pnpm already installed at `/usr/local/bin/pnpm` (version 10.30.1)
 
 2. Create directory structure (alongside existing `src/`):
+
    ```bash
    mkdir -p packages/{core,platform-adapters,web}
    ```
 
 3. Create `pnpm-workspace.yaml`:
+
    ```yaml
    packages:
      - 'packages/*'
    ```
 
 4. Create root `package.json` with workspace scripts (don't delete existing dependencies yet):
+
    ```json
    {
      "name": "markdown-viewer-monorepo",
@@ -100,6 +106,7 @@ interface IFileWatcher {
      }
    }
    ```
+
    Note: Keep existing `dev` and `build` scripts for CI/CD compatibility
 
 5. Set up TypeScript project references in root `tsconfig.json`
@@ -110,6 +117,7 @@ interface IFileWatcher {
    - Merge to main once validated
 
 **Validation**:
+
 - `pnpm install` completes successfully
 - Existing CI/CD still works (builds from `src/`)
 - GitHub Pages deployment unaffected
@@ -127,20 +135,24 @@ interface IFileWatcher {
 2. Create `packages/core/tsconfig.json` with `composite: true`
 
 3. **Copy** (not move) components to new location:
+
    ```bash
    cp src/app/components/MarkdownViewer.tsx packages/core/src/components/
    cp src/app/components/MermaidDiagram.tsx packages/core/src/components/
    cp src/app/components/ThemeToggle.tsx packages/core/src/components/
    cp src/app/components/ThemedToaster.tsx packages/core/src/components/
    ```
+
    **Important**: Use `cp` not `mv` - keep originals in `src/` for now
 
 4. **Copy** styles:
+
    ```bash
    cp -r src/styles packages/core/src/
    ```
 
 5. Create `packages/core/src/index.ts`:
+
    ```typescript
    export { MarkdownViewer } from './components/MarkdownViewer';
    export { MermaidDiagram } from './components/MermaidDiagram';
@@ -150,6 +162,7 @@ interface IFileWatcher {
    ```
 
 6. Add build script to `packages/core/package.json`:
+
    ```json
    "scripts": {
      "build": "tsc -b",
@@ -165,6 +178,7 @@ interface IFileWatcher {
    - Merge to main once validated
 
 **Validation**:
+
 - Core package builds without errors
 - Existing app still builds and deploys from `src/`
 
@@ -204,6 +218,7 @@ interface IFileWatcher {
    - Merge to main once validated
 
 **Validation**:
+
 - Platform adapters package builds successfully
 - Existing app still builds and deploys from `src/`
 
@@ -218,6 +233,7 @@ interface IFileWatcher {
    - React 19, Vite, Tailwind (devDependencies)
 
 2. Copy build configuration:
+
    ```bash
    cp -r public packages/web/
    cp index.html packages/web/
@@ -225,6 +241,7 @@ interface IFileWatcher {
    ```
 
 3. Update `packages/web/vite.config.ts` with workspace aliases:
+
    ```typescript
    resolve: {
      alias: {
@@ -242,6 +259,7 @@ interface IFileWatcher {
    - Remove redundant code now handled by platform adapters
 
    Example:
+
    ```typescript
    import { MarkdownViewer, ThemeToggle, ThemedToaster } from '@mdviewer/core';
    import { WebFileProvider, WebFileWatcher } from '@mdviewer/platform-adapters';
@@ -281,6 +299,7 @@ interface IFileWatcher {
 9. **Do NOT commit yet** - packages/web is ready but not deployed yet
 
 **Validation**:
+
 - `packages/web` runs identically to current `src/` version
 - All features work perfectly
 - Build output is equivalent (check bundle size)
@@ -609,6 +628,7 @@ jobs:
    - Merge to main once validated
 
 **Validation**:
+
 - All CI checks pass with monorepo structure
 - GitHub Pages deploys successfully from `packages/web/dist`
 - Deployed app is identical to previous version (same features, same UX)
@@ -623,6 +643,7 @@ jobs:
 Now that monorepo is validated and deploying successfully, we can remove the old structure.
 
 1. Delete old files:
+
    ```bash
    rm -rf src/
    rm index.html
@@ -667,6 +688,7 @@ Now that monorepo is validated and deploying successfully, we can remove the old
    - Merge to main once validated
 
 **Validation**:
+
 - `pnpm install && pnpm build:all` completes successfully
 - All CI checks pass
 - GitHub Pages still deploys correctly
@@ -694,6 +716,7 @@ Now that monorepo is validated and deploying successfully, we can remove the old
    - Use `ElectronFileWatcher` for native file watching
 
 4. Configure `electron-builder.yml`:
+
    ```yaml
    appId: com.aclabs.mdviewer
    productName: Markdown Viewer
@@ -718,6 +741,7 @@ Now that monorepo is validated and deploying successfully, we can remove the old
 7. Commit: `"feat: add Electron desktop app"`
 
 **Validation**:
+
 - Electron app launches successfully
 - Native file watching works with chokidar
 - All markdown features work identically to web app
@@ -729,6 +753,7 @@ Now that monorepo is validated and deploying successfully, we can remove the old
 **Goal**: Create extension with webview-based viewer
 
 1. Create `packages/vscode-extension/package.json`:
+
    ```json
    {
      "name": "markdown-viewer-vscode",
@@ -738,10 +763,12 @@ Now that monorepo is validated and deploying successfully, we can remove the old
      "activationEvents": ["onCommand:mdviewer.open"],
      "main": "./dist/extension.js",
      "contributes": {
-       "commands": [{
-         "command": "mdviewer.open",
-         "title": "Open Markdown Viewer"
-       }]
+       "commands": [
+         {
+           "command": "mdviewer.open",
+           "title": "Open Markdown Viewer"
+         }
+       ]
      }
    }
    ```
@@ -763,12 +790,14 @@ Now that monorepo is validated and deploying successfully, we can remove the old
    - Set up aliases for workspace packages
 
 5. Test locally:
+
    ```bash
    pnpm --filter @mdviewer/vscode-extension build
    code --extensionDevelopmentPath=./packages/vscode-extension
    ```
 
 6. Publish to VSCode Marketplace:
+
    ```bash
    vsce package
    vsce publish
@@ -777,6 +806,7 @@ Now that monorepo is validated and deploying successfully, we can remove the old
 7. Commit: `"feat: add VSCode extension"`
 
 **Validation**:
+
 - Extension loads in VSCode
 - Webview renders markdown correctly
 - Live updates work when editing files
@@ -822,21 +852,25 @@ pnpm -r add some-package
 ## Key Architectural Decisions
 
 ### 1. pnpm Workspaces vs Turborepo
+
 **Choice**: pnpm Workspaces
 
 **Rationale**: Simpler setup, sufficient for 3-5 packages, excellent performance. Can add Turborepo later if caching becomes critical.
 
 ### 2. Platform Abstraction Layer
+
 **Choice**: Explicit `IFileProvider`/`IFileWatcher` interfaces
 
 **Rationale**: Clear contracts, easy to test with mocks, prevents tight coupling to platform APIs.
 
 ### 3. Shared Core Package
+
 **Choice**: Single `@mdviewer/core` used by all platforms
 
 **Rationale**: DRY principle, 85% code reuse, single source of truth for markdown rendering.
 
 ### 4. Incremental Migration
+
 **Choice**: Phased approach with backward compatibility
 
 **Rationale**: Safer, allows rollback at any phase, GitHub Pages deployment continues working throughout migration.
@@ -845,39 +879,40 @@ pnpm -r add some-package
 
 ## Critical Files to Modify
 
-| File | Current LOC | Action | New LOC |
-|------|------------|--------|---------|
-| `src/app/App.tsx` | 411 | Refactor and split | ~150 (web), extracted to core |
-| `src/app/components/MarkdownViewer.tsx` | 117 | Move to core unchanged | 117 |
-| `src/app/components/MermaidDiagram.tsx` | 128 | Move to core unchanged | 128 |
-| `src/app/components/ThemeToggle.tsx` | 63 | Move to core unchanged | 63 |
-| `package.json` | - | Split dependencies to workspace packages | - |
-| `vite.config.ts` | - | Adapt for web package with aliases | - |
-| `.github/workflows/ci.yml` | - | Update for pnpm workspaces | - |
-| `.github/workflows/deploy.yml` | - | Update build paths | - |
+| File                                    | Current LOC | Action                                   | New LOC                       |
+| --------------------------------------- | ----------- | ---------------------------------------- | ----------------------------- |
+| `src/app/App.tsx`                       | 411         | Refactor and split                       | ~150 (web), extracted to core |
+| `src/app/components/MarkdownViewer.tsx` | 117         | Move to core unchanged                   | 117                           |
+| `src/app/components/MermaidDiagram.tsx` | 128         | Move to core unchanged                   | 128                           |
+| `src/app/components/ThemeToggle.tsx`    | 63          | Move to core unchanged                   | 63                            |
+| `package.json`                          | -           | Split dependencies to workspace packages | -                             |
+| `vite.config.ts`                        | -           | Adapt for web package with aliases       | -                             |
+| `.github/workflows/ci.yml`              | -           | Update for pnpm workspaces               | -                             |
+| `.github/workflows/deploy.yml`          | -           | Update build paths                       | -                             |
 
 ---
 
 ## Timeline Estimate
 
-| Phase | Duration | Complexity |
-|-------|----------|------------|
-| Phase 1: Monorepo Setup | 2 days | Low |
-| Phase 2: Extract Core | 3 days | Medium |
-| Phase 3: Platform Adapters | 2 days | Medium |
-| Phase 4: Migrate Web App | 4 days | Medium |
-| Phase 5: Update CI/CD | 2 days | Low |
-| Phase 6: Clean Up | 1 day | Low |
-| **Total (Monorepo Refactor)** | **14 days** | |
-| Phase 7: Electron App | 5 days | High |
-| Phase 8: VSCode Extension | 5 days | High |
-| **Total (All Platforms)** | **24 days** | |
+| Phase                         | Duration    | Complexity |
+| ----------------------------- | ----------- | ---------- |
+| Phase 1: Monorepo Setup       | 2 days      | Low        |
+| Phase 2: Extract Core         | 3 days      | Medium     |
+| Phase 3: Platform Adapters    | 2 days      | Medium     |
+| Phase 4: Migrate Web App      | 4 days      | Medium     |
+| Phase 5: Update CI/CD         | 2 days      | Low        |
+| Phase 6: Clean Up             | 1 day       | Low        |
+| **Total (Monorepo Refactor)** | **14 days** |            |
+| Phase 7: Electron App         | 5 days      | High       |
+| Phase 8: VSCode Extension     | 5 days      | High       |
+| **Total (All Platforms)**     | **24 days** |            |
 
 ---
 
 ## Success Criteria
 
 ### Monorepo Migration (Phases 1-6)
+
 - ✅ All CI checks pass on monorepo branch
 - ✅ GitHub Pages deployment works identically
 - ✅ Web app functionality unchanged (file opening, drag-drop, auto-reload, themes)
@@ -885,6 +920,7 @@ pnpm -r add some-package
 - ✅ Zero runtime errors in production
 
 ### Platform Expansion (Phases 7-8)
+
 - ✅ Electron app launches in <2 seconds
 - ✅ Native file watching latency <100ms
 - ✅ VSCode extension loads in <1 second
@@ -894,12 +930,12 @@ pnpm -r add some-package
 
 ## Risks & Mitigation
 
-| Risk | Mitigation |
-|------|------------|
+| Risk                                      | Mitigation                                                                 |
+| ----------------------------------------- | -------------------------------------------------------------------------- |
 | Breaking current web app during migration | Incremental migration with testing at each phase, feature branch isolation |
-| GitHub Pages deployment fails | Test deploy workflow on feature branch before merging to main |
-| TypeScript project references issues | Use `pnpm -r typecheck` to validate, extensive local testing |
-| pnpm adoption learning curve | Provide documentation, pnpm CLI similar to npm |
+| GitHub Pages deployment fails             | Test deploy workflow on feature branch before merging to main              |
+| TypeScript project references issues      | Use `pnpm -r typecheck` to validate, extensive local testing               |
+| pnpm adoption learning curve              | Provide documentation, pnpm CLI similar to npm                             |
 
 ---
 

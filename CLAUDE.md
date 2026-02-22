@@ -23,10 +23,12 @@ npm run typecheck  # Run TypeScript type checking
 The app uses a configurable base path to support both root and subdirectory deployments:
 
 **Configuration:** `vite.config.ts`
+
 - Uses `BASE_PATH` environment variable
 - Defaults to `'/'` for root deployments
 
 **Usage:**
+
 ```bash
 # Default: build for root path (custom domains, Netlify, Vercel)
 npm run build
@@ -36,6 +38,7 @@ BASE_PATH=/Markdownviewerapp/ npm run build
 ```
 
 **GitHub Pages Deployment:**
+
 - The `deploy.yml` workflow automatically sets `BASE_PATH=/Markdownviewerapp/`
 - Ensures assets load from correct subdirectory path
 - Local development always uses root path
@@ -158,10 +161,12 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 ### Tooling Configuration
 
 **TypeScript:**
+
 - `tsconfig.json` - Main TypeScript configuration
 - `tsconfig.node.json` - Node.js environment config for Vite
 
 **Code Quality:**
+
 - `eslint.config.js` - ESLint 9.x with flat config format
   - TypeScript support via typescript-eslint
   - React hooks and React refresh rules
@@ -169,6 +174,7 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 - `.prettierrc` - Prettier code formatting configuration
 
 **Testing:**
+
 - Playwright (`@playwright/test` v1.58.2) installed as dev dependency
 - Manual test file exists: `test-mermaid.spec.js`
 - Not yet integrated into npm scripts (no `npm test` command)
@@ -182,10 +188,12 @@ The project has four GitHub Actions workflows:
 #### 1. ci.yml - Pull Request Checks
 
 **Triggers:**
+
 - Pull request events (opened, synchronize, reopened)
 - Does NOT run on direct pushes to main
 
 **Jobs (Run in Parallel):**
+
 1. **lint** - Runs `npm run lint` (ESLint)
 2. **format-check** - Runs `npm run format -- --check` (Prettier validation)
 3. **typecheck** - Runs `npm run typecheck` (TypeScript)
@@ -196,10 +204,12 @@ All jobs use Node.js 24.x (LTS) and npm caching for performance.
 #### 2. deploy.yml - GitHub Pages Deployment
 
 **Triggers:**
+
 - Push to `main` branch
 - Manual via `workflow_dispatch`
 
 **What it does:**
+
 - Builds production bundle (`npm run build`)
 - Deploys `dist/` directory to `gh-pages` branch
 - Publishes app to GitHub Pages at `https://aclabs-code.github.io/Markdownviewerapp`
@@ -209,11 +219,13 @@ All jobs use Node.js 24.x (LTS) and npm caching for performance.
 #### 3. security.yml - Security Audit
 
 **Triggers:**
+
 - Weekly schedule (Mondays at 9am UTC)
 - Pull requests
 - Manual via `workflow_dispatch`
 
 **What it does:**
+
 - Runs `npm audit --audit-level=moderate`
 - Detects dependency vulnerabilities
 - Uploads audit results as artifacts
@@ -222,10 +234,12 @@ All jobs use Node.js 24.x (LTS) and npm caching for performance.
 #### 4. bundle-size.yml - Bundle Size Monitoring
 
 **Triggers:**
+
 - Pull requests
 - Push to `main` branch
 
 **What it does:**
+
 - Calculates gzipped size of built assets in `dist/`
 - Compares bundle size with base branch on PRs
 - Comments on PRs with size differences

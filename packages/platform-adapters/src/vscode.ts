@@ -37,7 +37,9 @@ export class VSCodeFileProvider implements IFileProvider {
     return true;
   }
 
-  async getFileMetadata(handle: FileHandle): Promise<{ name: string; path?: string; lastModified?: number }> {
+  async getFileMetadata(
+    handle: FileHandle
+  ): Promise<{ name: string; path?: string; lastModified?: number }> {
     const vscode = await import('vscode');
     const { basename } = await import('path');
     const fileUri = handle as any;
@@ -63,7 +65,10 @@ export class VSCodeFileProvider implements IFileProvider {
 // ─── VSCodeFileWatcher ───────────────────────────────────────────────────────
 
 export class VSCodeFileWatcher implements IFileWatcher {
-  private watchers = new Map<string, { watcher: any; timer: ReturnType<typeof setTimeout> | null }>();
+  private watchers = new Map<
+    string,
+    { watcher: any; timer: ReturnType<typeof setTimeout> | null }
+  >();
 
   watch(
     handle: FileHandle,

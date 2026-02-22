@@ -18,7 +18,7 @@ export interface FileMetadata {
  * - Electron: string (file path)
  * - VSCode: vscode.Uri
  */
-export type FileHandle = FileSystemFileHandle | string | unknown;
+export type FileHandle = FileSystemFileHandle | string;
 
 /**
  * File provider interface - implemented per platform
@@ -47,7 +47,9 @@ export interface IFileProvider {
    * @param handle - Platform-specific file handle
    * @returns File name, optional path, and optional last-modified timestamp (ms)
    */
-  getFileMetadata(handle: FileHandle): Promise<{ name: string; path?: string; lastModified?: number }>;
+  getFileMetadata(
+    handle: FileHandle
+  ): Promise<{ name: string; path?: string; lastModified?: number }>;
 
   /**
    * Check whether a file handle is still accessible (e.g. not deleted/unmounted)

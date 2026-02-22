@@ -37,7 +37,9 @@ export class WebFileProvider implements IFileProvider {
     return 'showOpenFilePicker' in window;
   }
 
-  async getFileMetadata(handle: FileHandle): Promise<{ name: string; path?: string; lastModified?: number }> {
+  async getFileMetadata(
+    handle: FileHandle
+  ): Promise<{ name: string; path?: string; lastModified?: number }> {
     const file = await (handle as FileSystemFileHandle).getFile();
     return { name: file.name, lastModified: file.lastModified };
   }

@@ -14,17 +14,20 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/Markdownviewerapp.git
    cd Markdownviewerapp
    ```
 
 3. Install dependencies:
+
    ```bash
    npm install
    ```
 
 4. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -36,6 +39,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 ### Making Changes
 
 1. Create a new branch for your changes:
+
    ```bash
    git checkout -b your-feature-name
    ```
@@ -43,6 +47,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 2. Make your changes and test them locally
 
 3. Run the code quality checks:
+
    ```bash
    npm run lint       # Check for linting errors
    npm run format     # Format code with Prettier
@@ -53,6 +58,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 4. Commit your changes following our commit message conventions (see below)
 
 5. Push your branch to your fork:
+
    ```bash
    git push -u origin your-feature-name
    ```
@@ -73,6 +79,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `ci:` - CI/CD changes
 
 **Examples:**
+
 ```
 feat: add support for custom markdown themes
 fix: resolve auto-reload issue in Firefox
@@ -88,6 +95,7 @@ This project uses automated code formatting and linting:
 - **TypeScript** - Type checking
 
 Before submitting a PR, ensure:
+
 - Code passes `npm run lint`
 - Code is formatted with `npm run format`
 - TypeScript checks pass with `npm run typecheck`

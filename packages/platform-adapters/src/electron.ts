@@ -10,10 +10,10 @@ export class ElectronFileProvider implements IFileProvider {
   async openFilePicker(): Promise<FileMetadata | null> {
     // Calls main process via IPC — main process uses Electron dialog.showOpenDialog
     const { ipcRenderer } = await import('electron');
-    const result = await ipcRenderer.invoke('dialog:openFile', {
+    const result = (await ipcRenderer.invoke('dialog:openFile', {
       properties: ['openFile'],
       filters: [{ name: 'Markdown Files', extensions: ['md', 'markdown', 'txt'] }],
-    }) as { filePath?: string };
+    })) as { filePath?: string };
 
     if (!result?.filePath) return null;
 
@@ -34,7 +34,9 @@ export class ElectronFileProvider implements IFileProvider {
     return true;
   }
 
-  async getFileMetadata(handle: FileHandle): Promise<{ name: string; path?: string; lastModified?: number }> {
+  async getFileMetadata(
+    handle: FileHandle
+  ): Promise<{ name: string; path?: string; lastModified?: number }> {
     const { stat } = await import('fs/promises');
     const { basename } = await import('path');
     const filePath = handle as string;
@@ -56,7 +58,10 @@ export class ElectronFileProvider implements IFileProvider {
 // ─── ElectronFileWatcher ─────────────────────────────────────────────────────
 
 export class ElectronFileWatcher implements IFileWatcher {
-  private watchers = new Map<string, { watcher: any; timer: ReturnType<typeof setTimeout> | null }>();
+  private watchers = new Map<
+    string,
+    { watcher: any; timer: ReturnType<typeof setTimeout> | null }
+  >();
 
   watch(
     handle: FileHandle,

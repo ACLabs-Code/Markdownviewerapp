@@ -15,7 +15,5 @@
   },
   "include": ["src/web.ts", "src/index.ts"],
   "exclude": ["src/electron.ts", "src/vscode.ts", "node_modules", "dist"],
-  "references": [
-    { "path": "../core" }
-  ]
+  "references": [{ "path": "../core" }]
 }
