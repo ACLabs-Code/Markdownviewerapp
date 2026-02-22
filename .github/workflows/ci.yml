@@ -12,17 +12,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Detect repo type
+        id: detect
+        run: |
+          if [ -f "pnpm-workspace.yaml" ] && [ -d "packages/web/src" ]; then
+            echo "monorepo=true" >> $GITHUB_OUTPUT
+          else
+            echo "monorepo=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect.outputs.monorepo == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm' || 'npm' }}
 
       - name: Install dependencies
-        run: npm ci
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Run ESLint
-        run: npm run lint
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm run lint' || 'npm run lint' }}
 
   format-check:
     name: Format Check
@@ -31,17 +46,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Detect repo type
+        id: detect
+        run: |
+          if [ -f "pnpm-workspace.yaml" ] && [ -d "packages/web/src" ]; then
+            echo "monorepo=true" >> $GITHUB_OUTPUT
+          else
+            echo "monorepo=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect.outputs.monorepo == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm' || 'npm' }}
 
       - name: Install dependencies
-        run: npm ci
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Check formatting
-        run: npm run format -- --check
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm run format -- --check' || 'npm run format -- --check' }}
 
   typecheck:
     name: Type Check
@@ -50,17 +80,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Detect repo type
+        id: detect
+        run: |
+          if [ -f "pnpm-workspace.yaml" ] && [ -d "packages/web/src" ]; then
+            echo "monorepo=true" >> $GITHUB_OUTPUT
+          else
+            echo "monorepo=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect.outputs.monorepo == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm' || 'npm' }}
 
       - name: Install dependencies
-        run: npm ci
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Run type check
-        run: npm run typecheck
+        run: |
+          if [ "${{ steps.detect.outputs.monorepo }}" = "true" ]; then
+            pnpm run typecheck
+            pnpm --filter @mdviewer/platform-adapters typecheck
+            pnpm --filter @mdviewer/web typecheck
+          else
+            npm run typecheck
+          fi
 
   build:
     name: Build
@@ -69,14 +121,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Detect repo type
+        id: detect
+        run: |
+          if [ -f "pnpm-workspace.yaml" ] && [ -d "packages/web/src" ]; then
+            echo "monorepo=true" >> $GITHUB_OUTPUT
+          else
+            echo "monorepo=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect.outputs.monorepo == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm' || 'npm' }}
 
       - name: Install dependencies
-        run: npm ci
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
 
       - name: Build project
-        run: npm run build
+        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm run build:web' || 'npm run build' }}
