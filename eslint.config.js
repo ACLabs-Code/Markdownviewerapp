@@ -13,6 +13,7 @@ export default tseslint.config(
       '.claude',
       'packages/platform-adapters/**',
       'packages/vscode-extension/**',
+      'packages/electron/**',
     ],
   },
   {

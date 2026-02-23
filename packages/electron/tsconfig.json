@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mdviewer/core": ["../core/dist/index"]
+    }
+  },
+  "include": ["src/main/index.ts", "src/main/preload.ts", "src/shared/types.ts"],
+  "exclude": ["node_modules", "dist"]
+}

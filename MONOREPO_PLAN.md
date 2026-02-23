@@ -16,12 +16,12 @@ Markdownviewerapp/
 │   │
 │   ├── platform-adapters/       # Platform abstraction layer (~300 LOC)
 │   │   ├── web.ts               # FileSystemAccess API implementation
-│   │   ├── electron.ts          # Node.js fs + chokidar implementation
+│   │   ├── electron.ts          # Node.js fs + chokidar implementation (stub)
 │   │   └── vscode.ts            # VSCode workspace API implementation
 │   │
 │   ├── web/                     # Web app (~200 LOC simplified App.tsx)
-│   ├── electron/                # Desktop app (~400 LOC new)
-│   └── vscode-extension/        # VSCode extension (~300 LOC new)
+│   ├── electron/                # Desktop app — NOT YET BUILT
+│   └── vscode-extension/        # VSCode extension ✅ COMPLETE
 │
 ├── pnpm-workspace.yaml
 └── package.json                 # Root with workspace scripts
@@ -56,8 +56,8 @@ interface IFileWatcher {
 **Implementations**:
 
 - **Web**: FileSystemAccess API + polling (current behavior)
-- **Electron**: Node.js `fs` + chokidar file watching
-- **VSCode**: VSCode workspace API + native file system watchers
+- **Electron**: Node.js `fs` + chokidar file watching — stub exists, package not yet built
+- **VSCode**: VSCode workspace API + native file system watchers ✅
 
 ---
 
@@ -71,7 +71,7 @@ interface IFileWatcher {
 
 ## Migration Phases
 
-### Phase 1: Setup Monorepo Infrastructure (2 days)
+### ✅ Phase 1: Setup Monorepo Infrastructure — COMPLETED
 
 **Goal**: Establish new structure alongside existing app without breaking anything
 
@@ -124,7 +124,7 @@ interface IFileWatcher {
 
 ---
 
-### Phase 2: Extract Core Package (3 days)
+### ✅ Phase 2: Extract Core Package — COMPLETED
 
 **Goal**: Build `@mdviewer/core` with shared components (keep `src/` untouched for now)
 
@@ -184,7 +184,7 @@ interface IFileWatcher {
 
 ---
 
-### Phase 3: Create Platform Adapters (2 days)
+### ✅ Phase 3: Create Platform Adapters — COMPLETED
 
 **Goal**: Implement platform abstraction layer (new package, no impact on existing app)
 
@@ -224,7 +224,7 @@ interface IFileWatcher {
 
 ---
 
-### Phase 4: Migrate Web App (4 days)
+### ✅ Phase 4: Migrate Web App — COMPLETED
 
 **Goal**: Build `packages/web` using core + adapters, validate it matches existing app
 
@@ -307,11 +307,15 @@ interface IFileWatcher {
 
 ---
 
-### Phase 5: Update CI/CD with Backward Compatibility (2 days)
+### ✅ Phase 5: Update CI/CD with Backward Compatibility — COMPLETED
 
 **Goal**: Add dual-path CI/CD that works with both old and new structures
 
 This is the critical phase for zero-downtime migration. CI/CD will automatically detect which structure exists and build accordingly.
+
+> **Note**: In practice, the dual-path detection logic was skipped — the workflows were
+> transitioned directly to pnpm-only once the monorepo was validated. The conditional
+> yaml blocks below were the planned approach but were not needed in the final implementation.
 
 #### Step 1: Update `.github/workflows/ci.yml`
 
@@ -636,9 +640,14 @@ jobs:
 
 ---
 
-### Phase 6: Clean Up Old Structure (1 day)
+### ✅ Phase 6: Clean Up Old Structure — COMPLETED
 
 **Goal**: Remove old single-package files and simplify CI/CD
+
+> **Actual**: Completed via commit `e8a40c6` / PR #36. Old `src/`, root `index.html`,
+> and root `vite.config.ts` removed. CI/CD simplified to pnpm-only (no conditional
+> detection logic needed — monorepo was the only structure at that point). `CLAUDE.md`
+> and `README.md` updated.
 
 Now that monorepo is validated and deploying successfully, we can remove the old structure.
 
@@ -696,7 +705,93 @@ Now that monorepo is validated and deploying successfully, we can remove the old
 
 ---
 
-### Phase 7: Build Electron App (5 days) - Optional
+### ✅ Phase 7: Build VSCode Extension — COMPLETED
+
+> **Note**: Originally planned as Phase 8. Built before Electron.
+
+**Goal**: Create extension with webview-based viewer
+
+> **Actual**: Completed via commit `5be6d0e` / PR #40. Key implementation differences
+> from the original plan:
+>
+> - Used **esbuild** (not Webpack) via `esbuild.mjs` — two separate bundles:
+>   `dist/extension.cjs` (CJS/Node, external: ['vscode']) and `dist/webview.js` (browser IIFE)
+> - `dist/webview.css` generated via `@tailwindcss/cli` pre-step
+> - Commands: `mdviewer.openPanel`, `mdviewer.openCurrentFile` (Cmd+Shift+M / Ctrl+Shift+M)
+> - Singleton panel that auto-updates when switching between `.md` files
+> - Real-time streaming of unsaved edits via `onDidChangeTextDocument`
+> - Theme forced to match VS Code's active color theme (no independent toggle)
+> - F5 debug workflow via `.vscode/launch.json` + `.vscode/tasks.json`
+> - Two tsconfigs: `tsconfig.json` (extension host, CJS) + `tsconfig.webview.json` (browser/DOM)
+>
+> **Known follow-up items**:
+>
+> - `webview.js` is ~12MB (Mermaid bundled as IIFE) — could lazy-load Mermaid
+> - Import alias workaround: `@mdviewer/platform-adapters-vscode` (hyphen) due to
+>   `moduleResolution: "node"` not supporting subpath imports; fix by switching to `"bundler"`
+
+1. Create `packages/vscode-extension/package.json`:
+
+   ```json
+   {
+     "name": "markdown-viewer-vscode",
+     "displayName": "Markdown Viewer",
+     "version": "1.0.0",
+     "engines": { "vscode": "^1.80.0" },
+     "activationEvents": ["onCommand:mdviewer.open"],
+     "main": "./dist/extension.js",
+     "contributes": {
+       "commands": [
+         {
+           "command": "mdviewer.open",
+           "title": "Open Markdown Viewer"
+         }
+       ]
+     }
+   }
+   ```
+
+2. Implement extension entry (`src/extension.ts`):
+   - Register command to open preview
+   - Create webview panel
+   - Use `VSCodeFileProvider` and `VSCodeFileWatcher`
+   - Handle message passing between webview and extension
+
+3. Implement webview (`src/webview/App.tsx`):
+   - Import components from `@mdviewer/core`
+   - Communicate with extension via `vscode.postMessage`
+   - Render markdown with auto-updates
+
+4. Configure build (`esbuild.mjs`):
+   - Bundle extension code as CJS (Node, external: vscode)
+   - Bundle webview as browser IIFE (fully self-contained)
+   - CSS via `@tailwindcss/cli` pre-step
+
+5. Test locally:
+
+   ```bash
+   pnpm --filter @mdviewer/vscode-extension build
+   # Press F5 in VS Code to launch Extension Development Host
+   ```
+
+6. Publish to VSCode Marketplace:
+
+   ```bash
+   vsce package
+   vsce publish
+   ```
+
+7. Commit: `"feat: add VSCode extension"`
+
+**Validation**:
+
+- Extension loads in VSCode
+- Webview renders markdown correctly
+- Live updates work when editing files
+
+---
+
+### ⬜ Phase 8: Build Electron App — NEXT
 
 **Goal**: Create desktop app with native file watching
 
@@ -748,90 +843,35 @@ Now that monorepo is validated and deploying successfully, we can remove the old
 
 ---
 
-### Phase 8: Build VSCode Extension (5 days) - Optional
-
-**Goal**: Create extension with webview-based viewer
-
-1. Create `packages/vscode-extension/package.json`:
-
-   ```json
-   {
-     "name": "markdown-viewer-vscode",
-     "displayName": "Markdown Viewer",
-     "version": "1.0.0",
-     "engines": { "vscode": "^1.80.0" },
-     "activationEvents": ["onCommand:mdviewer.open"],
-     "main": "./dist/extension.js",
-     "contributes": {
-       "commands": [
-         {
-           "command": "mdviewer.open",
-           "title": "Open Markdown Viewer"
-         }
-       ]
-     }
-   }
-   ```
-
-2. Implement extension entry (`src/extension.ts`):
-   - Register command to open preview
-   - Create webview panel
-   - Use `VSCodeFileProvider` and `VSCodeFileWatcher`
-   - Handle message passing between webview and extension
-
-3. Implement webview (`src/webview/App.tsx`):
-   - Import components from `@mdviewer/core`
-   - Communicate with extension via `vscode.postMessage`
-   - Render markdown with auto-updates
-
-4. Configure Webpack (`webpack.config.js`):
-   - Bundle extension code
-   - Bundle webview separately
-   - Set up aliases for workspace packages
-
-5. Test locally:
-
-   ```bash
-   pnpm --filter @mdviewer/vscode-extension build
-   code --extensionDevelopmentPath=./packages/vscode-extension
-   ```
-
-6. Publish to VSCode Marketplace:
-
-   ```bash
-   vsce package
-   vsce publish
-   ```
-
-7. Commit: `"feat: add VSCode extension"`
-
-**Validation**:
-
-- Extension loads in VSCode
-- Webview renders markdown correctly
-- Live updates work when editing files
-
----
-
 ## Development Workflow
 
 ### Daily Commands
 
 ```bash
 # Start web dev server
-pnpm dev:web
+pnpm run dev
 
 # Build all packages
-pnpm build:all
+pnpm run build:all
 
 # Lint all packages
-pnpm lint
+pnpm run lint
 
 # Type check all packages
-pnpm typecheck
+pnpm run typecheck
 
 # Format code
-pnpm format
+pnpm run format
+```
+
+### VS Code Extension
+
+```bash
+make vsce-build    # build extension + webview bundles + CSS
+make vsce-dev      # watch mode (tailwind + esbuild in parallel)
+make vsce-package  # produce .vsix for local install
+make vsce-install  # install .vsix into VS Code
+# Or press F5 in VS Code to launch Extension Development Host
 ```
 
 ### Adding Dependencies
@@ -875,43 +915,32 @@ pnpm -r add some-package
 
 **Rationale**: Safer, allows rollback at any phase, GitHub Pages deployment continues working throughout migration.
 
----
+### 5. esbuild over Webpack (VSCode Extension)
 
-## Critical Files to Modify
+**Choice**: `esbuild.mjs` with two explicit targets
 
-| File                                    | Current LOC | Action                                   | New LOC                       |
-| --------------------------------------- | ----------- | ---------------------------------------- | ----------------------------- |
-| `src/app/App.tsx`                       | 411         | Refactor and split                       | ~150 (web), extracted to core |
-| `src/app/components/MarkdownViewer.tsx` | 117         | Move to core unchanged                   | 117                           |
-| `src/app/components/MermaidDiagram.tsx` | 128         | Move to core unchanged                   | 128                           |
-| `src/app/components/ThemeToggle.tsx`    | 63          | Move to core unchanged                   | 63                            |
-| `package.json`                          | -           | Split dependencies to workspace packages | -                             |
-| `vite.config.ts`                        | -           | Adapt for web package with aliases       | -                             |
-| `.github/workflows/ci.yml`              | -           | Update for pnpm workspaces               | -                             |
-| `.github/workflows/deploy.yml`          | -           | Update build paths                       | -                             |
+**Rationale**: Simpler configuration, significantly faster builds, explicit control over CJS vs IIFE output. Webpack's complexity wasn't justified for two bundle targets.
 
 ---
 
-## Timeline Estimate
+## Timeline
 
-| Phase                         | Duration    | Complexity |
-| ----------------------------- | ----------- | ---------- |
-| Phase 1: Monorepo Setup       | 2 days      | Low        |
-| Phase 2: Extract Core         | 3 days      | Medium     |
-| Phase 3: Platform Adapters    | 2 days      | Medium     |
-| Phase 4: Migrate Web App      | 4 days      | Medium     |
-| Phase 5: Update CI/CD         | 2 days      | Low        |
-| Phase 6: Clean Up             | 1 day       | Low        |
-| **Total (Monorepo Refactor)** | **14 days** |            |
-| Phase 7: Electron App         | 5 days      | High       |
-| Phase 8: VSCode Extension     | 5 days      | High       |
-| **Total (All Platforms)**     | **24 days** |            |
+| Phase                      | Status      | Complexity |
+| -------------------------- | ----------- | ---------- |
+| Phase 1: Monorepo Setup    | ✅ Done     | Low        |
+| Phase 2: Extract Core      | ✅ Done     | Medium     |
+| Phase 3: Platform Adapters | ✅ Done     | Medium     |
+| Phase 4: Migrate Web App   | ✅ Done     | Medium     |
+| Phase 5: Update CI/CD      | ✅ Done     | Low        |
+| Phase 6: Clean Up          | ✅ Done     | Low        |
+| Phase 7: VSCode Extension  | ✅ Done     | High       |
+| **Phase 8: Electron App**  | **⬜ Next** | **High**   |
 
 ---
 
 ## Success Criteria
 
-### Monorepo Migration (Phases 1-6)
+### Monorepo Migration (Phases 1-6) — COMPLETE
 
 - ✅ All CI checks pass on monorepo branch
 - ✅ GitHub Pages deployment works identically
@@ -919,12 +948,12 @@ pnpm -r add some-package
 - ✅ Bundle size within 5% of current app
 - ✅ Zero runtime errors in production
 
-### Platform Expansion (Phases 7-8)
+### Platform Expansion
 
-- ✅ Electron app launches in <2 seconds
-- ✅ Native file watching latency <100ms
-- ✅ VSCode extension loads in <1 second
-- ✅ All platforms pass smoke tests
+- ✅ VSCode extension loads and previews markdown with live updates
+- ⬜ Electron app launches in <2 seconds
+- ⬜ Native file watching latency <100ms
+- ⬜ All platforms pass smoke tests
 
 ---
 
@@ -935,14 +964,5 @@ pnpm -r add some-package
 | Breaking current web app during migration | Incremental migration with testing at each phase, feature branch isolation |
 | GitHub Pages deployment fails             | Test deploy workflow on feature branch before merging to main              |
 | TypeScript project references issues      | Use `pnpm -r typecheck` to validate, extensive local testing               |
-| pnpm adoption learning curve              | Provide documentation, pnpm CLI similar to npm                             |
-
----
-
-## Next Steps
-
-1. **Review this plan** and ask any clarifying questions
-2. **Create GitHub issue** to track monorepo migration progress
-3. **Install pnpm**: `npm install -g pnpm`
-4. **Create feature branch**: `git checkout -b refactor/monorepo-setup`
-5. **Begin Phase 1**: Initialize monorepo structure
+| Electron IPC security model               | Use contextBridge for preload script; never expose Node APIs directly      |
+| Electron packaging size                   | Exclude devDependencies; evaluate if chokidar can share with main process  |

@@ -1,0 +1,28 @@
+appId: com.aclabs.mdviewer
+productName: MD Viewer
+copyright: Copyright © 2025 AC Labs
+
+directories:
+  output: dist-package
+
+files:
+  - dist/main.cjs
+  - dist/preload.cjs
+  - dist/renderer.js
+  - dist/renderer.css
+  - renderer.html
+  - package.json
+
+mac:
+  target: dmg
+  category: public.app-category.developer-tools
+
+win:
+  target: nsis
+
+linux:
+  target: AppImage
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

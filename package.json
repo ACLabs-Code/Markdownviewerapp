@@ -9,7 +9,7 @@
     "build:all": "pnpm -r --filter './packages/*' build",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "pnpm --filter @mdviewer/core build && pnpm --filter @mdviewer/platform-adapters typecheck && pnpm --filter @mdviewer/web typecheck"
+    "typecheck": "pnpm --filter @mdviewer/core build && pnpm --filter @mdviewer/platform-adapters typecheck && pnpm --filter @mdviewer/web typecheck && pnpm --filter mdviewer-electron typecheck"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
