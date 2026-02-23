@@ -81,21 +81,25 @@ Depends on `@mdviewer/core` and `@mdviewer/platform-adapters` via workspace alia
 Location: `packages/vscode-extension/`
 
 VS Code webview extension that renders markdown beside the active editor. Key behaviours:
+
 - Singleton panel auto-updates when switching between `.md` files
 - Streams unsaved edits via `onDidChangeTextDocument` in real time
 - Theme forced to match VS Code's active color theme (no independent toggle)
 - Mermaid diagrams supported
 
 **Build system** — `esbuild.mjs` produces two bundles:
+
 - `dist/extension.cjs` — extension host (CJS/Node, `external: ['vscode']`)
 - `dist/webview.js` — webview React app (browser IIFE, fully self-contained)
 - `dist/webview.css` — Tailwind v4 via `@tailwindcss/cli` pre-step
 
 **Two tsconfigs** (both typecheck-only, `noEmit: true` — esbuild handles compilation):
+
 - `tsconfig.json` — extension host (CommonJS, node module resolution)
 - `tsconfig.webview.json` — webview (ESNext, bundler resolution, DOM lib)
 
 **Makefile targets:**
+
 ```bash
 make vsce-build    # build extension + webview bundles + CSS
 make vsce-dev      # watch mode (tailwind + esbuild in parallel)
@@ -106,6 +110,7 @@ make vsce-install  # install .vsix into VS Code
 **F5 debug workflow:** `.vscode/launch.json` + `.vscode/tasks.json` at repo root. Press F5 in VS Code to launch Extension Development Host with the extension loaded.
 
 **Known follow-up items:**
+
 - `webview.js` is ~12MB (Mermaid bundled as IIFE). Only loaded inside the webview panel so doesn't affect activation time, but could be slimmed by lazy-loading Mermaid after initial render.
 - The import alias `@mdviewer/platform-adapters-vscode` (hyphen, not `/`) is a workaround for `moduleResolution: "node"` not supporting subpath imports in `paths`. Fix: change `moduleResolution` to `"bundler"` in `tsconfig.json` and restore `@mdviewer/platform-adapters/vscode`.
 
