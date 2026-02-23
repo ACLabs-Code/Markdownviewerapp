@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@mdviewer/core": "workspace:*",
-    "chokidar": "^4.0.3"
+    "chokidar": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",

@@ -4,3 +4,4 @@ node_modules
 .claude
 public
 assets
+pnpm-lock.yaml
