@@ -200,6 +200,7 @@ export default function App() {
     // next-themes@0.4.6 declares ThemeProvider as (props: ThemeProviderProps) => React.JSX.Element,
     // which causes TS2322 ("children does not exist") under TS 5.9 strict JSX checking even though
     // ThemeProviderProps extends React.PropsWithChildren. Track: https://github.com/pacocoursey/next-themes/issues
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore TS2322 -- error is environment-dependent (TypeScript 5.9 + next-themes@0.4.6)
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div
