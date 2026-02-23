@@ -36,3 +36,33 @@ npm run build
 ```
 
 The production build will be in the `dist/` directory.
+
+---
+
+## VS Code Extension
+
+A companion VS Code extension (`mdviewer-vscode`) renders markdown in a panel beside your editor. It is not yet published to the VS Code Marketplace and has no formal versioning — build and install it manually from source.
+
+### Usage
+
+- Open a `.md` file in VS Code
+- Press `Cmd+Shift+M` (macOS) / `Ctrl+Shift+M` (Windows/Linux), or click the preview icon in the editor title bar, or run **MD Viewer: Preview Current File** from the command palette
+- The panel opens beside your editor and updates automatically as you switch between `.md` files or make unsaved edits
+- Theme follows VS Code's active color theme (light/dark)
+
+### Build and install
+
+Requires the monorepo dependencies to be installed first (`pnpm install` from the repo root).
+
+```bash
+# Build the extension bundles
+make vsce-build
+
+# Package into a .vsix file
+make vsce-package
+
+# Install into your VS Code
+make vsce-install
+```
+
+Reload VS Code after installing. To uninstall, find **MD Viewer** in the Extensions sidebar and click Uninstall.
