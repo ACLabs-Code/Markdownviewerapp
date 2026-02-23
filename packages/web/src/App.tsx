@@ -196,6 +196,8 @@ export default function App() {
   };
 
   return (
+    // next-themes@0.4.6 ThemeProvider types are incompatible with TypeScript 5.9 strict JSX children checking
+    // @ts-expect-error TS2322
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div
         className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-300 relative"
