@@ -148,9 +148,10 @@ When requesting features, please include:
 
 Key directories and files:
 
-- `src/app/App.tsx` - Main application component
-- `src/app/components/` - React components
-- `src/styles/` - Tailwind CSS v4 configuration
+- `packages/web/src/App.tsx` - Main application component
+- `packages/core/src/components/` - Shared React components
+- `packages/core/src/styles/` - Tailwind CSS v4 configuration
+- `packages/platform-adapters/src/` - Platform-specific file handling
 - `.github/workflows/` - CI/CD workflows
 - `CLAUDE.md` - Detailed technical documentation
 

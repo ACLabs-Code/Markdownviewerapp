@@ -15,17 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Detect repo type
-        id: detect
-        run: |
-          if [ -f "pnpm-workspace.yaml" ]; then
-            echo "monorepo=true" >> $GITHUB_OUTPUT
-          else
-            echo "monorepo=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Setup pnpm
-        if: steps.detect.outputs.monorepo == 'true'
         uses: pnpm/action-setup@v4
         with:
           version: latest
@@ -34,19 +24,18 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm' || 'npm' }}
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm install' || 'npm ci' }}
+        run: pnpm install
 
       - name: Run security audit
-        run: ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm audit --audit-level=moderate --prod' || 'npm audit --production --audit-level=moderate' }}
+        run: pnpm audit --audit-level=moderate --prod
 
       - name: Upload audit results
         if: always()
         uses: actions/upload-artifact@v6
         with:
           name: security-audit-results
-          path: |
-            ${{ steps.detect.outputs.monorepo == 'true' && 'pnpm-lock.yaml' || 'package-lock.json' }}
+          path: pnpm-lock.yaml
           retention-days: 30

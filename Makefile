@@ -13,7 +13,7 @@ dev:
 
 # Build the web app (packages/web → packages/web/dist)
 build:
-	pnpm run build:web
+	pnpm run build
 
 # Build all packages
 build-all:
@@ -32,12 +32,8 @@ format-check:
 	pnpm exec prettier --check .
 
 # Run TypeScript typechecks across all packages
-# Core must be compiled first so platform-adapters can resolve @mdviewer/core types
 typecheck:
 	pnpm run typecheck
-	pnpm --filter @mdviewer/core build
-	pnpm --filter @mdviewer/platform-adapters typecheck
-	pnpm --filter @mdviewer/web typecheck
 
 # Run all quality checks without building — mirrors CI lint/format/typecheck jobs
 check: format-check lint typecheck
