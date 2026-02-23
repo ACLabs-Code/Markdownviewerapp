@@ -31,9 +31,9 @@ format:
 format-check:
 	pnpm exec prettier --check .
 
-# Run TypeScript typechecks across all packages
+# Run TypeScript typechecks across all packages (including vscode extension)
 typecheck:
-	pnpm run typecheck
+	pnpm run typecheck && pnpm --filter mdviewer-vscode typecheck
 
 # Run all quality checks without building — mirrors CI lint/format/typecheck jobs
 check: format-check lint typecheck
@@ -42,6 +42,26 @@ check: format-check lint typecheck
 # Mirrors all CI checks. Fix failures here before opening a PR.
 # If format-check fails: run 'make format' to auto-fix, then re-run.
 pre-pr: check build
+
+# ─── VS Code Extension ────────────────────────────────────────────────────────
+
+# Build the extension (extension host + webview bundles + CSS)
+vsce-build:
+	pnpm --filter mdviewer-vscode build
+
+# Watch mode — run alongside the "Launch MD Viewer Extension (Watch Mode)" F5 config
+vsce-dev:
+	pnpm --filter mdviewer-vscode build:watch
+
+# Package into a .vsix for local install
+vsce-package:
+	pnpm --filter mdviewer-vscode package
+
+# Install the packaged .vsix into your VS Code installation
+vsce-install:
+	code --install-extension packages/vscode-extension/mdviewer-vscode-*.vsix
+
+# ─── Utilities ────────────────────────────────────────────────────────────────
 
 # Clean all build artifacts
 clean:

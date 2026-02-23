@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@mdviewer/core": ["../core/src/index.ts"],
+      "@mdviewer/core/styles": ["../core/src/styles/index.css"]
+    }
+  },
+  "include": ["src/webview/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
