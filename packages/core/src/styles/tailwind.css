@@ -1,5 +1,6 @@
 @import 'tailwindcss' source(none);
 @source '../**/*.{js,ts,jsx,tsx}';
 @source '../../../web/src/**/*.{js,ts,jsx,tsx}';
+@source '../../../vscode-extension/src/**/*.{js,ts,jsx,tsx}';
 
 @import 'tw-animate-css';

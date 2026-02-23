@@ -25,19 +25,20 @@ make build        # pnpm run build
 make build-all    # pnpm run build:all
 make lint         # pnpm run lint
 make format       # pnpm run format
-make typecheck    # pnpm run typecheck
+make typecheck    # pnpm run typecheck (includes vscode-extension)
 make pre-pr       # Full pre-PR check: format-check + lint + typecheck + build
 ```
 
 ## Monorepo Architecture
 
-This is a pnpm workspace monorepo (`pnpm-workspace.yaml`) with three packages:
+This is a pnpm workspace monorepo (`pnpm-workspace.yaml`) with four packages:
 
 ```
 packages/
   core/               # @mdviewer/core — shared React components, styles, types
   platform-adapters/  # @mdviewer/platform-adapters — platform-specific file I/O
   web/                # @mdviewer/web — the web application (Vite + React)
+  vscode-extension/   # mdviewer-vscode — VS Code webview extension
 ```
 
 ### Package: `@mdviewer/core`
@@ -74,6 +75,44 @@ Location: `packages/web/`
 The deployable web application. Entry point: `packages/web/src/main.tsx`. Vite config: `packages/web/vite.config.ts`.
 
 Depends on `@mdviewer/core` and `@mdviewer/platform-adapters` via workspace aliases.
+
+### Package: `mdviewer-vscode`
+
+Location: `packages/vscode-extension/`
+
+VS Code webview extension that renders markdown beside the active editor. Key behaviours:
+
+- Singleton panel auto-updates when switching between `.md` files
+- Streams unsaved edits via `onDidChangeTextDocument` in real time
+- Theme forced to match VS Code's active color theme (no independent toggle)
+- Mermaid diagrams supported
+
+**Build system** — `esbuild.mjs` produces two bundles:
+
+- `dist/extension.cjs` — extension host (CJS/Node, `external: ['vscode']`)
+- `dist/webview.js` — webview React app (browser IIFE, fully self-contained)
+- `dist/webview.css` — Tailwind v4 via `@tailwindcss/cli` pre-step
+
+**Two tsconfigs** (both typecheck-only, `noEmit: true` — esbuild handles compilation):
+
+- `tsconfig.json` — extension host (CommonJS, node module resolution)
+- `tsconfig.webview.json` — webview (ESNext, bundler resolution, DOM lib)
+
+**Makefile targets:**
+
+```bash
+make vsce-build    # build extension + webview bundles + CSS
+make vsce-dev      # watch mode (tailwind + esbuild in parallel)
+make vsce-package  # produce .vsix for local install
+make vsce-install  # install .vsix into VS Code
+```
+
+**F5 debug workflow:** `.vscode/launch.json` + `.vscode/tasks.json` at repo root. Press F5 in VS Code to launch Extension Development Host with the extension loaded.
+
+**Known follow-up items:**
+
+- `webview.js` is ~12MB (Mermaid bundled as IIFE). Only loaded inside the webview panel so doesn't affect activation time, but could be slimmed by lazy-loading Mermaid after initial render.
+- The import alias `@mdviewer/platform-adapters-vscode` (hyphen, not `/`) is a workaround for `moduleResolution: "node"` not supporting subpath imports in `paths`. Fix: change `moduleResolution` to `"bundler"` in `tsconfig.json` and restore `@mdviewer/platform-adapters/vscode`.
 
 ## Build Configuration
 
@@ -249,11 +288,28 @@ packages/platform-adapters/src/
   index.ts                    # Package exports
   web.ts                      # WebFileProvider + WebFileWatcher
   electron.ts                 # (future)
-  vscode.ts                   # (future)
+  vscode.ts                   # VSCodeFileProvider + VSCodeFileWatcher
 
 packages/web/src/
   main.tsx                    # App entry point
   App.tsx                     # Main component (file handling, state, UI layout)
   components/
     ui/                       # shadcn/ui components (mostly unused template boilerplate)
+
+packages/vscode-extension/
+  esbuild.mjs                 # Two-target build script (extension host + webview)
+  tsconfig.json               # Extension host typecheck (CJS/Node)
+  tsconfig.webview.json       # Webview typecheck (browser/DOM)
+  src/
+    extension.ts              # activate(), commands, subscriptions
+    MdViewerPanel.ts          # Panel lifecycle, HTML/CSP template, messaging, file watching
+    webview/
+      types.ts                # Message protocol (ExtensionToWebviewMessage, WebviewToExtensionMessage)
+      main.tsx                # createRoot() entry point
+      App.tsx                 # postMessage-driven React app (no file I/O — extension host handles it)
+      styles.css              # @import core CSS + webview body overrides
+
+.vscode/                      # Tracked — F5 debug workflow
+  launch.json                 # "Launch MD Viewer Extension" config
+  tasks.json                  # "build-extension" pre-launch task
 ```

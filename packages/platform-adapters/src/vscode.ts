@@ -23,7 +23,7 @@ export class VSCodeFileProvider implements IFileProvider {
     return {
       name: basename(fileUri.fsPath),
       path: fileUri.fsPath,
-      handle: fileUri,
+      handle: fileUri as any,
     };
   }
 

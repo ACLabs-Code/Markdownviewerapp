@@ -1,0 +1,90 @@
+{
+  "name": "mdviewer-vscode",
+  "displayName": "MD Viewer",
+  "description": "Live markdown preview with Mermaid, GFM, and auto-reload",
+  "version": "0.1.0",
+  "publisher": "aclabs",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.cjs",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mdviewer.openPanel",
+        "title": "MD Viewer: Open Preview Panel",
+        "icon": "$(markdown)"
+      },
+      {
+        "command": "mdviewer.openCurrentFile",
+        "title": "MD Viewer: Preview Current File",
+        "icon": "$(open-preview)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "mdviewer.openCurrentFile",
+          "when": "resourceExtname =~ /\\.(md|markdown)$/",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "mdviewer.openCurrentFile",
+          "when": "resourceExtname =~ /\\.(md|markdown)$/",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "mdviewer.openCurrentFile",
+          "when": "resourceExtname =~ /\\.(md|markdown)$/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "mdviewer.openCurrentFile",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus && resourceExtname =~ /\\.(md|markdown)$/"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onCommand:mdviewer.openPanel",
+    "onCommand:mdviewer.openCurrentFile",
+    "onLanguage:markdown"
+  ],
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "build:watch": "concurrently \"tailwindcss -i src/webview/styles.css -o dist/webview.css --watch\" \"node esbuild.mjs --watch\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.webview.json",
+    "package": "node esbuild.mjs --production && vsce package --no-dependencies",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@mdviewer/core": "workspace:*",
+    "@mdviewer/platform-adapters": "workspace:*",
+    "next-themes": "0.4.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "concurrently": "^9.0.0",
+    "esbuild": "^0.25.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.9.3"
+  }
+}

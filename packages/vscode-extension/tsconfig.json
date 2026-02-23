@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mdviewer/core": ["../core/dist/index"],
+      "@mdviewer/platform-adapters-vscode": ["../platform-adapters/src/vscode.ts"]
+    }
+  },
+  "include": ["src/extension.ts", "src/MdViewerPanel.ts", "src/webview/types.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,12 @@
+@import '../../../core/src/styles/index.css';
+
+/* Scan extension webview source for Tailwind utilities */
+@source '../**/*.{ts,tsx}';
+
+/* Webview body: fill the panel, no extra margin */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
