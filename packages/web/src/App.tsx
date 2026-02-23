@@ -1,105 +1,68 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MarkdownViewer } from './components/MarkdownViewer';
-import { FileText, Upload, RefreshCw, Eye, EyeOff, Github, FileCode } from 'lucide-react';
-import { toast } from 'sonner';
 import { ThemeProvider } from 'next-themes';
-import { ThemeToggle } from './components/ThemeToggle';
-import { ThemedToaster } from './components/ThemedToaster';
+import { toast } from 'sonner';
+import { FileText, Upload, RefreshCw, Eye, EyeOff, Github, FileCode } from 'lucide-react';
+import { MarkdownViewer, ThemeToggle, ThemedToaster } from '@mdviewer/core';
+import type { FileHandle } from '@mdviewer/core';
+import { WebFileProvider, WebFileWatcher } from '@mdviewer/platform-adapters';
+
+// Module-level singletons — stateless, safe to share across renders
+const fileProvider = new WebFileProvider();
+const fileWatcher = new WebFileWatcher();
+
+function isValidMarkdownFile(name: string): boolean {
+  return /\.(md|markdown|txt)$/i.test(name);
+}
 
 export default function App() {
   const [markdownContent, setMarkdownContent] = useState<string>(
     '# Welcome to Markdown Viewer\n\nClick "Open File" to load a markdown file from your computer.'
   );
   const [fileName, setFileName] = useState<string | null>(null);
-  const [fileHandle, setFileHandle] = useState<any>(null); // FileSystemFileHandle
+  const [fileHandle, setFileHandle] = useState<FileHandle | null>(null);
   const [isWatching, setIsWatching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLegacyMode, setIsLegacyMode] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Refs to avoid restarting the interval constantly
-  const lastModifiedRef = useRef<number>(0);
-  const fileHandleRef = useRef<any>(null);
-
-  // Sync state to ref
+  // Auto-reload: WebFileWatcher.watch() returns a cleanup fn — maps directly to useEffect cleanup
   useEffect(() => {
-    fileHandleRef.current = fileHandle;
-  }, [fileHandle]);
-
-  // Poll for file changes
-  useEffect(() => {
-    let intervalId: any;
-
-    if (isWatching && fileHandle && !isLegacyMode) {
-      // toast.info('Auto-watch started');
-      intervalId = setInterval(async () => {
-        try {
-          if (!fileHandleRef.current) return;
-
-          const file = await fileHandleRef.current.getFile();
-          if (file.lastModified > lastModifiedRef.current) {
-            console.log('File changed, reloading...');
-            const text = await file.text();
-            setMarkdownContent(text);
-            lastModifiedRef.current = file.lastModified;
-            toast.success('File updated automatically');
-          }
-        } catch (error) {
-          console.error('Error polling file:', error);
-          // Don't stop watching immediately on transient errors, but maybe log it
-        }
-      }, 1000);
-    }
-
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
+    if (!isWatching || !fileHandle || isLegacyMode) return;
+    const unwatch = fileWatcher.watch(
+      fileHandle,
+      (content) => {
+        setMarkdownContent(content);
+        toast.success('File updated automatically');
+      },
+      { pollInterval: 1000 }
+    );
+    return unwatch;
   }, [isWatching, fileHandle, isLegacyMode]);
 
   const handleOpenFile = async () => {
     try {
-      // Check if API exists
-      if (!('showOpenFilePicker' in window)) {
-        throw new Error('FileSystemAccess API not supported');
-      }
+      const metadata = await fileProvider.openFilePicker();
+      if (!metadata) return; // User cancelled (AbortError handled inside provider)
 
-      const [handle] = await (window as any).showOpenFilePicker({
-        types: [
-          {
-            description: 'Markdown Files',
-            accept: {
-              'text/markdown': ['.md', '.markdown'],
-              'text/plain': ['.txt'],
-            },
-          },
-        ],
-        multiple: false,
-      });
-
-      setFileHandle(handle);
-      setIsLegacyMode(false);
       setIsLoading(true);
+      const content = await fileProvider.readFile(metadata.handle);
 
-      const file = await handle.getFile();
-      const text = await file.text();
-
-      setFileName(file.name);
-      setMarkdownContent(text);
-      lastModifiedRef.current = file.lastModified;
-
-      setIsWatching(true); // Auto-enable watch on open
-      setIsLoading(false);
-      toast.success(`Opened ${file.name}`);
-    } catch (error: any) {
-      // AbortError means user cancelled the picker
-      if (error.name === 'AbortError') return;
-
-      console.warn('Falling back to legacy file input due to:', error);
-      // Fallback to hidden input click
-      if (fileInputRef.current) {
-        fileInputRef.current.click();
+      setFileHandle(metadata.handle);
+      setFileName(metadata.name);
+      setMarkdownContent(content);
+      setIsLegacyMode(false);
+      setIsWatching(fileProvider.supportsWatching());
+      toast.success(`Opened ${metadata.name}`);
+    } catch (err: any) {
+      if (err.message === 'FileSystemAccess API not supported') {
+        // Graceful fallback to hidden file input for unsupported browsers
+        fileInputRef.current?.click();
+      } else {
+        toast.error('Failed to open file');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -115,19 +78,18 @@ export default function App() {
       setFileHandle(null);
       setIsLegacyMode(true);
       setIsWatching(false);
-      setIsLoading(false);
       toast.success(`Opened ${file.name} (Read-only mode)`);
       toast.info('Auto-reload is unavailable in this environment');
     } catch (error) {
       console.error('Error reading file:', error);
       toast.error('Failed to read file');
+    } finally {
       setIsLoading(false);
+      // Reset value so same file can be re-selected
+      event.target.value = '';
     }
-    // Reset value so we can select the same file again if needed
-    event.target.value = '';
   };
 
-  // Drag and Drop Handlers
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -137,10 +99,7 @@ export default function App() {
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    // Check if we're actually leaving the window or just moving over a child element
     if (e.currentTarget.contains(e.relatedTarget as Node)) return;
-
     setIsDragging(false);
   };
 
@@ -149,10 +108,8 @@ export default function App() {
     e.stopPropagation();
     setIsDragging(false);
 
-    // Try to get file handle via experimental API for watching support
+    // Try modern File System Access API first (enables auto-reload after drop)
     const items = e.dataTransfer.items;
-    let handled = false;
-
     if (items && items.length > 0) {
       const item = items[0];
       if (item.kind === 'file' && 'getAsFileSystemHandle' in item) {
@@ -160,26 +117,20 @@ export default function App() {
           const handle = await (item as any).getAsFileSystemHandle();
           if (handle?.kind === 'file') {
             const file = await handle.getFile();
-
-            // Check extension
-            if (!file.name.toLowerCase().match(/\.(md|markdown|txt)$/)) {
+            if (!isValidMarkdownFile(file.name)) {
               toast.error('Please drop a Markdown file (.md, .markdown, .txt)');
               return;
             }
-
-            setFileHandle(handle);
-            setIsLegacyMode(false);
             setIsLoading(true);
-
-            const text = await file.text();
+            const content = await fileProvider.readFile(handle);
+            setFileHandle(handle);
             setFileName(file.name);
-            setMarkdownContent(text);
-            lastModifiedRef.current = file.lastModified;
-
+            setMarkdownContent(content);
+            setIsLegacyMode(false);
             setIsWatching(true);
             setIsLoading(false);
             toast.success(`Opened ${file.name}`);
-            handled = true;
+            return;
           }
         } catch (err) {
           console.warn('Failed to get file handle from drop, falling back to legacy', err);
@@ -187,18 +138,14 @@ export default function App() {
       }
     }
 
-    if (handled) return;
-
-    // Fallback to standard File API (Read-only)
+    // Fallback to standard File API (read-only)
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
-
-      if (!/\.(md|markdown|txt)$/.exec(file.name.toLowerCase())) {
+      if (!isValidMarkdownFile(file.name)) {
         toast.error('Please drop a Markdown file (.md, .markdown, .txt)');
         return;
       }
-
       try {
         setIsLoading(true);
         const text = await file.text();
@@ -223,22 +170,16 @@ export default function App() {
       toast.info('Please open the file again to reload changes.');
       return;
     }
-
     if (!fileHandle) return;
-
     try {
       setIsLoading(true);
-      const file = await fileHandle.getFile();
-      const text = await file.text();
-
-      setMarkdownContent(text);
-      lastModifiedRef.current = file.lastModified;
-
-      setIsLoading(false);
+      const content = await fileProvider.readFile(fileHandle);
+      setMarkdownContent(content);
       toast.success('Reloaded successfully');
     } catch (error) {
       console.error('Error reloading:', error);
       toast.error('Failed to reload. Try opening the file again.');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -249,15 +190,18 @@ export default function App() {
       return;
     }
     if (!fileHandle) return;
-    setIsWatching(!isWatching);
-    if (!isWatching) {
-      toast.info('Watch mode enabled');
-    } else {
-      toast.info('Watch mode disabled');
-    }
+    const next = !isWatching;
+    setIsWatching(next);
+    toast.info(next ? 'Watch mode enabled' : 'Watch mode disabled');
   };
 
   return (
+    // TODO: Remove @ts-expect-error when next-themes fixes ThemeProvider types for TypeScript 5.9+.
+    // next-themes@0.4.6 declares ThemeProvider as (props: ThemeProviderProps) => React.JSX.Element,
+    // which causes TS2322 ("children does not exist") under TS 5.9 strict JSX checking even though
+    // ThemeProviderProps extends React.PropsWithChildren. Track: https://github.com/pacocoursey/next-themes/issues
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore TS2322 -- error is environment-dependent (TypeScript 5.9 + next-themes@0.4.6)
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div
         className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-300 relative"

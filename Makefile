@@ -1,37 +1,48 @@
-.PHONY: setup dev build lint format check clean
+.PHONY: setup dev build build-all lint format format-check typecheck check pre-pr clean
 
 # Default target
 all: setup check build
 
-# Install dependencies
+# Install all workspace dependencies
 setup:
-	npm install
+	pnpm install
 
 # Start the Vite development server
 dev:
-	npm run dev
+	pnpm run dev
 
-# Build the production bundle
+# Build the web app (packages/web → packages/web/dist)
 build:
-	npm run build
+	pnpm run build
 
-# Run ESLint to catch errors
+# Build all packages
+build-all:
+	pnpm run build:all
+
+# Run ESLint across the workspace
 lint:
-	npm run lint
+	pnpm run lint
 
-# Format codebase with Prettier
+# Format codebase with Prettier (rewrites files)
 format:
-	npm run format
+	pnpm run format
 
-# Run TypeScript typechecking
+# Validate formatting without writing — mirrors CI format-check job
+format-check:
+	pnpm exec prettier --check .
+
+# Run TypeScript typechecks across all packages
 typecheck:
-	npm run typecheck
+	pnpm run typecheck
 
-# Run all quality checks (lint, format validation, typecheck)
-check: lint typecheck
-	npx prettier --check .
+# Run all quality checks without building — mirrors CI lint/format/typecheck jobs
+check: format-check lint typecheck
 
-# Clean build artifacts and node_modules
+# Full pre-PR validation — run this before every push
+# Mirrors all CI checks. Fix failures here before opening a PR.
+# If format-check fails: run 'make format' to auto-fix, then re-run.
+pre-pr: check build
+
+# Clean all build artifacts
 clean:
-	rm -rf dist
-	rm -rf node_modules
+	rm -rf dist packages/*/dist node_modules packages/*/node_modules

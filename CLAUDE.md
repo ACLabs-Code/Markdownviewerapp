@@ -8,239 +8,252 @@ When you make changes to the project (new features, configuration changes, archi
 ## Development Commands
 
 ```bash
-npm i              # Install dependencies
-npm run dev        # Start Vite development server
-npm run build      # Build production bundle
-npm run lint       # Run ESLint checks
-npm run format     # Format code with Prettier
-npm run typecheck  # Run TypeScript type checking
+pnpm install          # Install all workspace dependencies
+pnpm run dev          # Start the web app dev server (packages/web → localhost:5173)
+pnpm run build        # Build the web app (packages/web/dist/)
+pnpm run build:all    # Build all packages (core → platform-adapters → web)
+pnpm run lint         # Run ESLint across the workspace
+pnpm run format       # Format all code with Prettier
+pnpm run typecheck    # Type-check all packages in dependency order
 ```
+
+Makefile shortcuts (call the same pnpm commands):
+
+```bash
+make dev          # pnpm run dev
+make build        # pnpm run build
+make build-all    # pnpm run build:all
+make lint         # pnpm run lint
+make format       # pnpm run format
+make typecheck    # pnpm run typecheck
+make pre-pr       # Full pre-PR check: format-check + lint + typecheck + build
+```
+
+## Monorepo Architecture
+
+This is a pnpm workspace monorepo (`pnpm-workspace.yaml`) with three packages:
+
+```
+packages/
+  core/               # @mdviewer/core — shared React components, styles, types
+  platform-adapters/  # @mdviewer/platform-adapters — platform-specific file I/O
+  web/                # @mdviewer/web — the web application (Vite + React)
+```
+
+### Package: `@mdviewer/core`
+
+Location: `packages/core/`
+
+Exports shared UI components consumed by all platforms:
+
+- `MarkdownViewer` — renders markdown with GFM + Mermaid support
+- `MermaidDiagram` — Mermaid diagram renderer with theme sync
+- `ThemeToggle` — light/dark/system theme switcher
+- `ThemedToaster` — Sonner toast notifications synced to app theme
+- Platform interface types: `FileMetadata`, `FileHandle`, `IFileProvider`, `IFileWatcher`
+
+CSS styles are a separate export: `import '@mdviewer/core/styles'`
+
+Build: `pnpm --filter @mdviewer/core build` (tsc composite build, outputs to `packages/core/dist/`)
+
+### Package: `@mdviewer/platform-adapters`
+
+Location: `packages/platform-adapters/`
+
+Platform-specific implementations of `IFileProvider` and `IFileWatcher`:
+
+- `WebFileProvider` / `WebFileWatcher` — File System Access API with legacy `<input>` fallback
+- Electron and VS Code adapters (future)
+
+Depends on `@mdviewer/core` for interface types. Requires core to be built before typechecking.
+
+### Package: `@mdviewer/web`
+
+Location: `packages/web/`
+
+The deployable web application. Entry point: `packages/web/src/main.tsx`. Vite config: `packages/web/vite.config.ts`.
+
+Depends on `@mdviewer/core` and `@mdviewer/platform-adapters` via workspace aliases.
 
 ## Build Configuration
 
 ### Base Path for Deployments
 
-The app uses a configurable base path to support both root and subdirectory deployments:
+`packages/web/vite.config.ts` reads the `BASE_PATH` environment variable:
 
-**Configuration:** `vite.config.ts`
-- Uses `BASE_PATH` environment variable
-- Defaults to `'/'` for root deployments
-
-**Usage:**
 ```bash
-# Default: build for root path (custom domains, Netlify, Vercel)
-npm run build
+# Local dev / default (root path)
+pnpm run dev
 
-# GitHub Pages: build for subdirectory
-BASE_PATH=/Markdownviewerapp/ npm run build
+# GitHub Pages (subdirectory deployment)
+BASE_PATH=/Markdownviewerapp/ pnpm run build
 ```
 
-**GitHub Pages Deployment:**
-- The `deploy.yml` workflow automatically sets `BASE_PATH=/Markdownviewerapp/`
-- Ensures assets load from correct subdirectory path
-- Local development always uses root path
+The `deploy.yml` workflow sets `BASE_PATH=/Markdownviewerapp/` automatically.
+
+### Build Ordering Constraint
+
+`platform-adapters/tsconfig.json` resolves `@mdviewer/core` to `../core/dist/index.d.ts`. Core must be compiled before platform-adapters can typecheck. The root `typecheck` script handles this:
+
+```bash
+pnpm --filter @mdviewer/core build && \
+pnpm --filter @mdviewer/platform-adapters typecheck && \
+pnpm --filter @mdviewer/web typecheck
+```
 
 ## Architecture Overview
 
 ### Dual-Mode File Loading Pattern
 
-The app implements progressive enhancement for file access with two modes:
+`packages/web/src/App.tsx` implements progressive enhancement with two modes:
 
 **Modern Mode (File System Access API):**
 
-- Uses `showOpenFilePicker()` API (src/app/App.tsx:61-103)
-- Provides persistent file handles that enable auto-reload
-- Supports drag-and-drop with `getAsFileSystemHandle()`
-- Only available in Chrome/Edge 86+ (not Safari/Firefox as of 2025)
+- `WebFileProvider.openFilePicker()` uses `showOpenFilePicker()` — Chrome/Edge 86+ only
+- Returns a `FileSystemFileHandle` that `WebFileWatcher` can poll for changes
+- Supports drag-and-drop via `getAsFileSystemHandle()`
 
 **Legacy Fallback Mode:**
 
-- Uses traditional `<input type="file">` with FileReader (src/app/App.tsx:105-127)
+- Activates when `showOpenFilePicker` is not available (Safari, Firefox)
+- Falls back to hidden `<input type="file">` with FileReader
 - Read-only mode (no auto-reload capability)
-- Activates when `!('showOpenFilePicker' in window)`
-
-The mode is detected on first file open and users are notified via toast messages.
 
 ### Auto-Reload Implementation
 
-**Polling-based file watching** (src/app/App.tsx:28-56):
-
-- Uses `setInterval` at 1000ms intervals
-- Compares `file.lastModified` timestamps to detect changes
-- Stores last modified time in `lastModifiedRef` to avoid unnecessary updates
-- Uses `fileHandleRef` to access latest handle without restarting interval
-- Only works in modern File System Access API mode
+`WebFileWatcher.watch()` polls at 1000ms intervals using `file.lastModified` comparison. Returns an `unwatch` cleanup function wired to `useEffect` cleanup in `App.tsx`.
 
 Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 
 ### Theme System Integration
 
-**Provider:** `next-themes` library (not Next.js specific)
-
-- Wraps entire app in `<ThemeProvider>` (src/app/App.tsx:260)
-- Supports light, dark, and system modes
-- Uses `attribute="class"` to apply `.dark` class to root
+`next-themes` `ThemeProvider` wraps the app in `packages/web/src/App.tsx`. Applies `.dark` class to root element via `attribute="class"`. Supports light, dark, and system modes.
 
 **CSS Variables:**
 
-- Defined in src/styles/theme.css using OKLCH color space
+- Defined in `packages/core/src/styles/theme.css` using OKLCH color space
 - Tailwind v4 maps these via `@theme inline` directive
 - Custom variant: `@custom-variant dark (&:is(.dark *))`
 
 **Toast Integration:**
 
-- `ThemedToaster` component (src/app/components/ThemedToaster.tsx) syncs Sonner toast theme with app theme
-- Uses `useTheme()` hook to read current theme
+`ThemedToaster` component (`packages/core/src/components/ThemedToaster.tsx`) syncs Sonner toast theme with app theme via `useTheme()` hook.
 
 ### Markdown Rendering Configuration
 
-**Location:** src/app/components/MarkdownViewer.tsx
-
-**Setup:**
+Location: `packages/core/src/components/MarkdownViewer.tsx`
 
 - `react-markdown` with `remark-gfm` plugin for GitHub Flavored Markdown
 - `react-syntax-highlighter` with `vscDarkPlus` theme for code blocks
-- Custom component renderers for all markdown elements (h1-h4, p, ul, ol, blockquote, table, etc.)
+- Custom component renderers for all markdown elements
 - Inline code styled with pink accent colors
 - Dark theme always used for code blocks regardless of app theme
 
 **Mermaid Diagram Support:**
 
 - Code blocks with `language-mermaid` are rendered as diagrams
-- `MermaidDiagram` component (src/app/components/MermaidDiagram.tsx) handles rendering
+- `MermaidDiagram` component (`packages/core/src/components/MermaidDiagram.tsx`) handles rendering
 - Automatically syncs with app theme (light/dark) via `useTheme()` hook
-- Client-side only rendering to prevent SSR issues (uses `mounted` state)
-- Error handling shows user-friendly messages with proper text wrapping for invalid syntax
-- Supports all Mermaid diagram types: flowchart, sequence, class, state, git graph, etc.
-
-**Mermaid Configuration:**
-
-- Uses `htmlLabels: true` for proper text measurement and rendering
-- Security level: `'loose'` to enable HTML labels
-- Theme mapping: `dark` mode → `'dark'`, light mode → `'default'`
-- Font family: `'ui-sans-serif, system-ui, sans-serif'` for consistent rendering
-- CSS overrides in src/styles/index.css prevent SVG text clipping
-
-**Error Component:**
-
-- Displays red error box with AlertCircle icon for invalid Mermaid syntax
-- Error message uses inline styles for guaranteed text wrapping (`wordBreak`, `overflowWrap`, `whiteSpace`)
-- Collapsible `<details>` section shows raw diagram code for debugging
-- Styled to match app's design system (zinc colors, rounded corners)
-- DOM cleanup removes Mermaid's error footer ("Syntax error in text mermaid version X.X.X") from page bottom
+- `htmlLabels: true`, security level `'loose'`, theme mapped light→`'default'` dark→`'dark'`
+- Error handling shows user-friendly messages with collapsible raw code for debugging
+- CSS overrides in `packages/core/src/styles/index.css` prevent SVG text clipping
 
 ## Key Technical Details
 
-### Project Origin
+### Workspace Dependency Resolution
 
-- Generated from Figma Make (design-to-code tool)
-- Explains why there are 48+ UI components in src/app/components/ui/, most unused
-- These are shadcn/ui components (MIT licensed) from the generation template
+In dev, Vite resolves `@mdviewer/core` and `@mdviewer/platform-adapters` directly to their `src/` directories via aliases in `packages/web/vite.config.ts` — giving full HMR across packages without a build step.
 
 ### Tailwind CSS v4 Usage
 
-- Uses newer syntax: `@source`, `@theme inline`, `@custom-variant`
-- Different from Tailwind v3 - config is in CSS files, not tailwind.config.js
-- Main config in src/styles/tailwind.css
+Uses newer CSS-based config syntax (no `tailwind.config.js`):
 
-### Component Patterns
-
-- `cn()` utility (src/app/components/ui/utils.ts) combines clsx + tailwind-merge
-- Used throughout UI components for conditional className merging
-- Pattern: `className={cn("base-classes", conditionalClasses, className)}`
+- Main config: `packages/core/src/styles/tailwind.css`
+- `@source`, `@theme inline`, `@custom-variant` directives
 
 ### Browser Compatibility
 
-- File System Access API only works in Chrome/Edge 86+, not Safari/Firefox
-- App gracefully degrades to legacy file input mode
-- Test modern features with: `if ('showOpenFilePicker' in window)`
+File System Access API: Chrome/Edge 86+ only, not Safari/Firefox as of 2025. App gracefully degrades to legacy file input mode.
 
 ### Tooling Configuration
 
 **TypeScript:**
-- `tsconfig.json` - Main TypeScript configuration
-- `tsconfig.node.json` - Node.js environment config for Vite
+
+- `tsconfig.json` (root) — base config extended by all packages; `"include": []` (no files of its own)
+- `tsconfig.node.json` (root) — covers `eslint.config.js` for type-aware linting
+- `packages/*/tsconfig.json` — package-level configs that extend root
 
 **Code Quality:**
-- `eslint.config.js` - ESLint 9.x with flat config format
-  - TypeScript support via typescript-eslint
-  - React hooks and React refresh rules
-  - Type-aware linting enabled
-- `.prettierrc` - Prettier code formatting configuration
+
+- `eslint.config.js` — ESLint 9.x flat config with typescript-eslint, react-hooks, react-refresh rules; type-aware linting via `parserOptions.project` referencing all package tsconfigs
+- `.prettierrc` — Prettier configuration
 
 **Testing:**
+
 - Playwright (`@playwright/test` v1.58.2) installed as dev dependency
-- Manual test file exists: `test-mermaid.spec.js`
-- Not yet integrated into npm scripts (no `npm test` command)
+- `test-mermaid.spec.js` exists for manual runs
+- Not yet integrated into CI
 
-### CI/CD Pipeline
+### Project Origin
 
-**Location:** `.github/workflows/`
+Generated from Figma Make (design-to-code tool). Explains why there are 48+ UI components in `packages/web/src/components/ui/`, most unused — these are shadcn/ui components (MIT licensed) from the generation template.
 
-The project has four GitHub Actions workflows:
+## CI/CD Pipeline
 
-#### 1. ci.yml - Pull Request Checks
+Location: `.github/workflows/`
 
-**Triggers:**
-- Pull request events (opened, synchronize, reopened)
-- Does NOT run on direct pushes to main
+All workflows use pnpm exclusively (Node.js 24.x, pnpm cache).
 
-**Jobs (Run in Parallel):**
-1. **lint** - Runs `npm run lint` (ESLint)
-2. **format-check** - Runs `npm run format -- --check` (Prettier validation)
-3. **typecheck** - Runs `npm run typecheck` (TypeScript)
-4. **build** - Runs `npm run build` (Production build verification)
+### `ci.yml` — Pull Request Checks
 
-All jobs use Node.js 24.x (LTS) and npm caching for performance.
+Triggers on pull requests. Four parallel jobs:
 
-#### 2. deploy.yml - GitHub Pages Deployment
+1. **lint** — `pnpm run lint`
+2. **format-check** — `pnpm exec prettier --check .`
+3. **typecheck** — `pnpm run typecheck`
+4. **build** — `pnpm run build`
 
-**Triggers:**
-- Push to `main` branch
-- Manual via `workflow_dispatch`
+### `deploy.yml` — GitHub Pages Deployment
 
-**What it does:**
-- Builds production bundle (`npm run build`)
-- Deploys `dist/` directory to `gh-pages` branch
-- Publishes app to GitHub Pages at `https://aclabs-code.github.io/Markdownviewerapp`
+Triggers on push to `main` or manual dispatch. Builds `packages/web` with `BASE_PATH=/Markdownviewerapp/`, deploys `packages/web/dist/` to `gh-pages` branch.
 
-**Permissions:** Requires `contents: write` for gh-pages branch push
+URL: `https://aclabs-code.github.io/Markdownviewerapp`
 
-#### 3. security.yml - Security Audit
+### `security.yml` — Security Audit
 
-**Triggers:**
-- Weekly schedule (Mondays at 9am UTC)
-- Pull requests
-- Manual via `workflow_dispatch`
+Weekly (Mondays 9am UTC), on PRs, and manual. Runs `pnpm audit --audit-level=moderate --prod` (production deps only). Uploads `pnpm-lock.yaml` as artifact.
 
-**What it does:**
-- Runs `npm audit --audit-level=moderate`
-- Detects dependency vulnerabilities
-- Uploads audit results as artifacts
-- Fails if moderate+ severity issues found
+### `bundle-size.yml` — Bundle Size Monitoring
 
-#### 4. bundle-size.yml - Bundle Size Monitoring
+On PRs and push to `main`. Uses `preactjs/compressed-size-action@v2`. Monitors `packages/web/dist/**/*.{js,css,html}`. Comments on PRs with size changes vs base branch.
 
-**Triggers:**
-- Pull requests
-- Push to `main` branch
+## File Organization
 
-**What it does:**
-- Calculates gzipped size of built assets in `dist/`
-- Compares bundle size with base branch on PRs
-- Comments on PRs with size differences
-- Tracks historical bundle size on main branch
-- Current baseline: ~3.8MB uncompressed
+```
+packages/core/src/
+  index.ts                    # Package exports
+  components/
+    MarkdownViewer.tsx         # Markdown renderer (react-markdown + remark-gfm)
+    MermaidDiagram.tsx         # Mermaid diagram renderer with theme sync
+    ThemeToggle.tsx            # Theme switcher component
+    ThemedToaster.tsx          # Sonner toast with theme sync
+  styles/
+    index.css                  # Main CSS entry (imports fonts, tailwind, theme)
+    fonts.css
+    tailwind.css               # Tailwind v4 config (@source, @theme inline)
+    theme.css                  # OKLCH color variables
+  types/
+    platform.ts                # IFileProvider, IFileWatcher, FileHandle interfaces
 
-**Uses:** `preactjs/compressed-size-action@v2` for size analysis
+packages/platform-adapters/src/
+  index.ts                    # Package exports
+  web.ts                      # WebFileProvider + WebFileWatcher
+  electron.ts                 # (future)
+  vscode.ts                   # (future)
 
-### File Organization
-
-- `src/main.tsx` - Entry point
-- `src/app/App.tsx` - Main component (395 lines, file handling, state management, UI layout)
-- `src/app/components/MarkdownViewer.tsx` - Pure presentational component for rendering markdown
-- `src/app/components/MermaidDiagram.tsx` - Mermaid diagram renderer with theme support
-- `src/app/components/ThemeToggle.tsx` - Theme switcher component
-- `src/app/components/ThemedToaster.tsx` - Toast notifications with theme sync
-- `src/app/components/ui/` - shadcn/ui components (mostly unused boilerplate)
-- `src/styles/` - Tailwind v4 config and theme variables
+packages/web/src/
+  main.tsx                    # App entry point
+  App.tsx                     # Main component (file handling, state, UI layout)
+  components/
+    ui/                       # shadcn/ui components (mostly unused template boilerplate)
+```

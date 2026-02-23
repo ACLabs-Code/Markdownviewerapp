@@ -8,19 +8,17 @@ export default defineConfig({
   // Set BASE_PATH env var for subdirectory deployments (e.g., GitHub Pages)
   base: process.env.BASE_PATH || '/',
 
-  plugins: [
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss()],
+
   resolve: {
     alias: {
-      // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
+      // Specific sub-path exports must come before the package alias
+      '@mdviewer/core/styles': path.resolve(__dirname, '../core/src/styles/index.css'),
+      // Resolve workspace packages to their src/ directories for HMR support
+      '@mdviewer/core': path.resolve(__dirname, '../core/src'),
+      '@mdviewer/platform-adapters': path.resolve(__dirname, '../platform-adapters/src'),
     },
   },
 
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 });

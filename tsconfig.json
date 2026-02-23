@@ -20,13 +20,9 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@mdviewer/core": ["./packages/core/src"],
+      "@mdviewer/platform-adapters": ["./packages/platform-adapters/src"]
     }
   },
-  "include": ["src"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "include": []
 }

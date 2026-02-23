@@ -7,26 +7,29 @@ Thank you for your interest in contributing! This document provides guidelines f
 ### Prerequisites
 
 - Node.js 24.x or higher (project uses Node 24.x in CI)
-- npm (comes with Node.js)
+- pnpm (`npm install -g pnpm`)
 - Git
 
 ### Setting Up Your Development Environment
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/Markdownviewerapp.git
    cd Markdownviewerapp
    ```
 
 3. Install dependencies:
+
    ```bash
-   npm install
+   pnpm install
    ```
 
 4. Start the development server:
+
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 5. Open http://localhost:5173 in your browser
@@ -36,23 +39,36 @@ Thank you for your interest in contributing! This document provides guidelines f
 ### Making Changes
 
 1. Create a new branch for your changes:
+
    ```bash
    git checkout -b your-feature-name
    ```
 
 2. Make your changes and test them locally
 
-3. Run the code quality checks:
+3. Run pre-PR validation — mirrors all CI checks:
+
    ```bash
-   npm run lint       # Check for linting errors
-   npm run format     # Format code with Prettier
-   npm run typecheck  # Check TypeScript types
-   npm run build      # Ensure production build works
+   make pre-pr
+   ```
+
+   This runs format check, lint, typecheck (all packages), and build in sequence.
+   If the format check fails, run `make format` to auto-fix then re-run.
+
+   Individual checks are also available:
+
+   ```bash
+   make format-check  # Validate Prettier formatting (read-only)
+   make format        # Auto-fix formatting
+   make lint          # ESLint
+   make typecheck     # TypeScript across all packages
+   make build         # Production build
    ```
 
 4. Commit your changes following our commit message conventions (see below)
 
 5. Push your branch to your fork:
+
    ```bash
    git push -u origin your-feature-name
    ```
@@ -73,6 +89,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `ci:` - CI/CD changes
 
 **Examples:**
+
 ```
 feat: add support for custom markdown themes
 fix: resolve auto-reload issue in Firefox
@@ -87,11 +104,7 @@ This project uses automated code formatting and linting:
 - **Prettier** - Code formatting
 - **TypeScript** - Type checking
 
-Before submitting a PR, ensure:
-- Code passes `npm run lint`
-- Code is formatted with `npm run format`
-- TypeScript checks pass with `npm run typecheck`
-- Production build succeeds with `npm run build`
+Before submitting a PR, run `make pre-pr` and ensure it passes cleanly.
 
 **Note:** All PRs are automatically checked by CI. Your PR must pass all checks before it can be merged.
 
@@ -135,9 +148,10 @@ When requesting features, please include:
 
 Key directories and files:
 
-- `src/app/App.tsx` - Main application component
-- `src/app/components/` - React components
-- `src/styles/` - Tailwind CSS v4 configuration
+- `packages/web/src/App.tsx` - Main application component
+- `packages/core/src/components/` - Shared React components
+- `packages/core/src/styles/` - Tailwind CSS v4 configuration
+- `packages/platform-adapters/src/` - Platform-specific file handling
 - `.github/workflows/` - CI/CD workflows
 - `CLAUDE.md` - Detailed technical documentation
 

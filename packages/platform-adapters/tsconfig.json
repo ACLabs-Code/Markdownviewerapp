@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "paths": {
+      "@mdviewer/core": ["../core/dist/index"]
+    }
+  },
+  "include": ["src/web.ts", "src/index.ts"],
+  "exclude": ["src/electron.ts", "src/vscode.ts", "node_modules", "dist"],
+  "references": [{ "path": "../core" }]
+}
