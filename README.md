@@ -18,12 +18,14 @@ Edit your markdown files in your favorite editor while MarkdownViewer automatica
 
 ## Quick Start
 
+This is a pnpm workspace monorepo. Install [pnpm](https://pnpm.io/) first if you don't have it.
+
 ```bash
 # Install dependencies
-npm i
+pnpm install
 
-# Start the development server
-npm run dev
+# Start the web app development server
+pnpm run dev
 
 # Open http://localhost:5173 in your browser
 # Click "Open Markdown File" and select a .md file to preview
@@ -32,10 +34,40 @@ npm run dev
 ## Build for Production
 
 ```bash
-npm run build
+# Build the web app only
+pnpm run build
+
+# Build all packages (core, platform-adapters, web, vscode-extension, electron)
+pnpm run build:all
 ```
 
-The production build will be in the `dist/` directory.
+The web app production build will be in `packages/web/dist/`.
+
+---
+
+## Desktop App (Electron)
+
+A native desktop application (`mdviewer-electron`) with the same features as the web app, plus native file watching via chokidar. Not yet published — build and run from source.
+
+### Build and run
+
+Requires the monorepo dependencies to be installed first (`pnpm install` from the repo root).
+
+```bash
+# Build the app
+make electron-build
+
+# Run the app
+make electron-run
+
+# Watch mode for development
+make electron-dev
+
+# Package into distributable (.dmg / .exe / .AppImage)
+make electron-package
+```
+
+The packaged app will be in `packages/electron/dist-package/`.
 
 ---
 
