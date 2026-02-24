@@ -73,7 +73,22 @@ Location: `packages/platform-adapters/`
 Platform-specific implementations of `IFileProvider` and `IFileWatcher`:
 
 - `WebFileProvider` / `WebFileWatcher` — File System Access API with legacy `<input>` fallback
-- Electron and VS Code adapters (future)
+- `VSCodeFileProvider` / `VSCodeFileWatcher` — VSCode workspace API + native file system watchers
+- `ElectronFileProvider` / `ElectronFileWatcher` — Node.js fs + chokidar (note: unsafe ipcRenderer, not used by electron package)
+
+**Platform Abstraction Interfaces:**
+
+```typescript
+interface IFileProvider {
+  openFilePicker(): Promise<FileMetadata | null>;
+  readFile(handle: FileHandle): Promise<string>;
+  supportsWatching(): boolean;
+}
+
+interface IFileWatcher {
+  watch(handle: FileHandle, onChanged: (content: string) => void): () => void;
+}
+```
 
 Depends on `@mdviewer/core` for interface types. Requires core to be built before typechecking.
 
