@@ -1,4 +1,4 @@
-.PHONY: setup dev build build-all lint format format-check typecheck check pre-pr clean
+.PHONY: setup dev build build-all lint format format-check typecheck check pre-pr clean electron-build electron-dev electron-run electron-package
 
 # Default target
 all: setup check build
@@ -31,7 +31,7 @@ format:
 format-check:
 	pnpm exec prettier --check .
 
-# Run TypeScript typechecks across all packages (including vscode extension)
+# Run TypeScript typechecks across all packages (including vscode + electron)
 typecheck:
 	pnpm run typecheck && pnpm --filter mdviewer-vscode typecheck
 
@@ -60,6 +60,24 @@ vsce-package:
 # Install the packaged .vsix into your VS Code installation
 vsce-install:
 	code --install-extension packages/vscode-extension/mdviewer-vscode-*.vsix
+
+# ─── Electron App ─────────────────────────────────────────────────────────────
+
+# Build the electron app (main + preload + renderer bundles + CSS)
+electron-build:
+	pnpm --filter mdviewer-electron build
+
+# Watch mode — rebuilds on source changes (run 'make electron-run' separately)
+electron-dev:
+	pnpm --filter mdviewer-electron build:watch
+
+# Run the built electron app
+electron-run:
+	pnpm --filter mdviewer-electron start
+
+# Package into a distributable (.dmg / .exe / .AppImage)
+electron-package:
+	pnpm --filter mdviewer-electron package
 
 # ─── Utilities ────────────────────────────────────────────────────────────────
 

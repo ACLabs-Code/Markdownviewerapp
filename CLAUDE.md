@@ -20,18 +20,26 @@ pnpm run typecheck    # Type-check all packages in dependency order
 Makefile shortcuts (call the same pnpm commands):
 
 ```bash
-make dev          # pnpm run dev
-make build        # pnpm run build
-make build-all    # pnpm run build:all
-make lint         # pnpm run lint
-make format       # pnpm run format
-make typecheck    # pnpm run typecheck (includes vscode-extension)
-make pre-pr       # Full pre-PR check: format-check + lint + typecheck + build
+make dev              # pnpm run dev
+make build            # pnpm run build
+make build-all        # pnpm run build:all
+make lint             # pnpm run lint
+make format           # pnpm run format
+make typecheck        # pnpm run typecheck (includes vscode-extension + electron)
+make pre-pr           # Full pre-PR check: format-check + lint + typecheck + build
+make electron-build   # build electron app bundles + CSS
+make electron-dev     # watch mode for electron
+make electron-run     # run the built electron app
+make electron-package # package into distributable
+make vsce-build       # build VS Code extension
+make vsce-dev         # watch mode for VS Code extension
+make vsce-package     # produce .vsix
+make vsce-install     # install .vsix into VS Code
 ```
 
 ## Monorepo Architecture
 
-This is a pnpm workspace monorepo (`pnpm-workspace.yaml`) with four packages:
+This is a pnpm workspace monorepo (`pnpm-workspace.yaml`) with five packages:
 
 ```
 packages/
@@ -39,6 +47,7 @@ packages/
   platform-adapters/  # @mdviewer/platform-adapters — platform-specific file I/O
   web/                # @mdviewer/web — the web application (Vite + React)
   vscode-extension/   # mdviewer-vscode — VS Code webview extension
+  electron/           # mdviewer-electron — desktop app (Electron)
 ```
 
 ### Package: `@mdviewer/core`
@@ -75,6 +84,53 @@ Location: `packages/web/`
 The deployable web application. Entry point: `packages/web/src/main.tsx`. Vite config: `packages/web/vite.config.ts`.
 
 Depends on `@mdviewer/core` and `@mdviewer/platform-adapters` via workspace aliases.
+
+### Package: `mdviewer-electron`
+
+Location: `packages/electron/`
+
+Standalone desktop application using Electron's two-process model with contextBridge security.
+
+**Architecture:**
+
+- **Main process** (`src/main/index.ts`): BrowserWindow, IPC handlers, chokidar file watcher, native menu
+- **Preload** (`src/main/preload.ts`): `contextBridge.exposeInMainWorld('electronAPI', {...})` — the only bridge between renderer and Node
+- **Renderer** (`src/renderer/`): React app consuming `window.electronAPI`, mirrors web App.tsx
+
+**Security model:** `contextIsolation: true`, `nodeIntegration: false`, `sandbox: false` (required for preload IPC; safe with contextIsolation).
+
+**IPC channels:**
+
+- `dialog:openFile` (invoke) → `{ filePath, name } | null`
+- `fs:readFile` (invoke) → file content string
+- `watch:start` / `watch:stop` (send) → start/stop chokidar watcher
+- `file:changed` (main→renderer push) → `{ content, lastModified }`
+- `menu:openFile` (main→renderer push) → `{ filePath, name }` (from native File menu)
+
+**Key design decision:** The existing `ElectronFileProvider` in `platform-adapters/src/electron.ts` directly uses `ipcRenderer` in the renderer — incompatible with contextIsolation. Instead, the renderer uses `RendererFileProvider` / `RendererFileWatcher` (`src/renderer/fileAdapter.ts`) that call `window.electronAPI`. Main process inlines chokidar logic directly.
+
+**Build system** — `esbuild.mjs` produces three bundles + CSS:
+
+- `dist/main.cjs` — main process (CJS/Node, `external: ['electron']`)
+- `dist/preload.cjs` — preload script (CJS/Node, `external: ['electron']`)
+- `dist/renderer.js` — renderer React app (browser IIFE, fully self-contained)
+- `dist/renderer.css` — Tailwind v4 via `@tailwindcss/cli` pre-step
+
+**Two tsconfigs** (both typecheck-only, `noEmit: true` — esbuild handles compilation):
+
+- `tsconfig.json` — main + preload (CommonJS, node module resolution, `@mdviewer/core` → `dist/index`)
+- `tsconfig.renderer.json` — renderer (ESNext, bundler resolution, DOM lib, `@mdviewer/core` → `src/index.ts`)
+
+**Makefile targets:**
+
+```bash
+make electron-build    # build main + preload + renderer bundles + CSS
+make electron-dev      # watch mode (rebuilds on source changes)
+make electron-run      # run the built app with electron
+make electron-package  # package into .dmg / .exe / .AppImage
+```
+
+**Packaging:** `electron-builder.yml` — dmg (macOS), nsis (Windows), AppImage (Linux), outputs to `dist-package/`.
 
 ### Package: `mdviewer-vscode`
 
@@ -137,7 +193,8 @@ The `deploy.yml` workflow sets `BASE_PATH=/Markdownviewerapp/` automatically.
 ```bash
 pnpm --filter @mdviewer/core build && \
 pnpm --filter @mdviewer/platform-adapters typecheck && \
-pnpm --filter @mdviewer/web typecheck
+pnpm --filter @mdviewer/web typecheck && \
+pnpm --filter mdviewer-electron typecheck
 ```
 
 ## Architecture Overview
@@ -287,7 +344,7 @@ packages/core/src/
 packages/platform-adapters/src/
   index.ts                    # Package exports
   web.ts                      # WebFileProvider + WebFileWatcher
-  electron.ts                 # (future)
+  electron.ts                 # ElectronFileProvider (unsafe ipcRenderer — not used by electron package)
   vscode.ts                   # VSCodeFileProvider + VSCodeFileWatcher
 
 packages/web/src/
@@ -312,4 +369,23 @@ packages/vscode-extension/
 .vscode/                      # Tracked — F5 debug workflow
   launch.json                 # "Launch MD Viewer Extension" config
   tasks.json                  # "build-extension" pre-launch task
+
+packages/electron/
+  esbuild.mjs                 # Three-target build script (main + preload + renderer)
+  electron-builder.yml        # Package config (dmg / nsis / AppImage)
+  renderer.html               # BrowserWindow entry point (at package root)
+  tsconfig.json               # Main + preload typecheck (CJS/Node)
+  tsconfig.renderer.json      # Renderer typecheck (browser/DOM)
+  src/
+    shared/
+      types.ts                # ElectronAPI interface, IPC payload types
+    main/
+      index.ts                # app lifecycle, BrowserWindow, IPC handlers, chokidar, menu
+      preload.ts              # contextBridge.exposeInMainWorld('electronAPI', {...})
+    renderer/
+      electron.d.ts           # Global Window interface extension (window.electronAPI)
+      fileAdapter.ts          # RendererFileProvider + RendererFileWatcher (call window.electronAPI)
+      App.tsx                 # React app (mirrors web App.tsx; adds onMenuOpenFile effect)
+      main.tsx                # createRoot() entry point
+      styles.css              # @import core CSS
 ```
