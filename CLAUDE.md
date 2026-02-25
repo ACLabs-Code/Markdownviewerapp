@@ -27,10 +27,19 @@ make lint             # pnpm run lint
 make format           # pnpm run format
 make typecheck        # pnpm run typecheck (includes vscode-extension + electron)
 make pre-pr           # Full pre-PR check: format-check + lint + typecheck + build
+
+# Setup & Utilities
+make setup-electron   # run Electron's install script (needed when build scripts blocked)
+make clean-deps       # remove all node_modules
+make setup-full       # full clean reinstall (clean-deps → setup → setup-electron)
+
+# Electron App
 make electron-build   # build electron app bundles + CSS
 make electron-dev     # watch mode for electron
 make electron-run     # run the built electron app
 make electron-package # package into distributable
+
+# VS Code Extension
 make vsce-build       # build VS Code extension
 make vsce-dev         # watch mode for VS Code extension
 make vsce-package     # produce .vsix
