@@ -318,6 +318,49 @@ File System Access API: Chrome/Edge 86+ only, not Safari/Firefox as of 2025. App
 
 Generated from Figma Make (design-to-code tool). Explains why there are 48+ UI components in `packages/web/src/components/ui/`, most unused — these are shadcn/ui components (MIT licensed) from the generation template.
 
+## Troubleshooting
+
+### TypeScript Build Errors After Git Operations
+
+**Symptom:** After merging PRs or pulling changes, `make typecheck` or `make build` fails with errors like:
+
+```
+error TS6305: Output file '/Users/.../packages/core/dist/index.d.ts' has not been built from source file
+```
+
+**Cause:** Stale `tsconfig.tsbuildinfo` files (TypeScript's incremental compilation cache) can become out-of-sync after git operations, causing TypeScript to incorrectly think files are up-to-date.
+
+**Solution:** Remove the stale cache files and rebuild:
+
+```bash
+rm -f packages/core/tsconfig.tsbuildinfo packages/web/tsconfig.tsbuildinfo
+make typecheck
+```
+
+Note: `*.tsbuildinfo` files are already properly ignored by git (`.gitignore` line 9).
+
+### Electron Installation Errors
+
+**Symptom:** Running `make electron-run` fails with:
+
+```
+Error: Electron failed to install correctly
+```
+
+**Cause:** pnpm's build script blocking (via `ignoredBuiltDependencies` in `.npmrc`) prevents Electron's post-install script from downloading the binary.
+
+**Solution:** Manually run Electron's install script:
+
+```bash
+make setup-electron
+```
+
+Or do a full clean reinstall:
+
+```bash
+make setup-full  # clean-deps → setup → setup-electron
+```
+
 ## CI/CD Pipeline
 
 Location: `.github/workflows/`
