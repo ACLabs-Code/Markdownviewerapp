@@ -1,4 +1,4 @@
-.PHONY: setup dev build build-all lint format format-check typecheck check pre-pr clean electron-build electron-dev electron-run electron-package
+.PHONY: setup setup-electron dev build build-all lint format format-check typecheck check pre-pr clean clean-deps electron-build electron-dev electron-run electron-package
 
 # Default target
 all: setup check build
@@ -6,6 +6,13 @@ all: setup check build
 # Install all workspace dependencies
 setup:
 	pnpm install
+
+# Setup Electron by running its install script (needed after pnpm install)
+setup-electron:
+	node node_modules/.pnpm/electron@*/node_modules/electron/install.js
+
+# Full setup from scratch (clean install + Electron setup)
+setup-full: clean-deps setup setup-electron
 
 # Start the Vite development server
 dev:
@@ -83,4 +90,8 @@ electron-package:
 
 # Clean all build artifacts
 clean:
-	rm -rf dist packages/*/dist node_modules packages/*/node_modules
+	rm -rf dist packages/*/dist
+
+# Clean dependencies (node_modules)
+clean-deps:
+	rm -rf node_modules packages/*/node_modules
