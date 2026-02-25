@@ -1,5 +1,6 @@
 {
   "name": "mdviewer-electron",
+  "productName": "MD Viewer",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/main.cjs",
