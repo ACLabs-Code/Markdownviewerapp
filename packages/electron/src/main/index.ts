@@ -4,6 +4,9 @@ import * as fs from 'fs/promises';
 import { watch } from 'chokidar';
 import type { OpenFileResult } from '../shared/types';
 
+// Set app name immediately after imports
+app.setName('MD Viewer');
+
 let mainWindow: BrowserWindow | null = null;
 let activeWatcher: ReturnType<typeof watch> | null = null;
 let activeWatchPath: string | null = null;
@@ -17,7 +20,6 @@ function createWindow(): void {
     height: 800,
     minWidth: 600,
     minHeight: 400,
-    titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -154,6 +156,11 @@ function buildMenu(): void {
 app
   .whenReady()
   .then(() => {
+    app.setAboutPanelOptions({
+      applicationName: 'MD Viewer',
+      applicationVersion: '0.1.0',
+      copyright: 'Copyright © 2025 AC Labs',
+    });
     createWindow();
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
