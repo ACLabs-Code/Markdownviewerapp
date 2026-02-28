@@ -159,8 +159,8 @@ importers:
         version: 5.0.0
     devDependencies:
       '@types/node':
-        specifier: ^25.3.0
-        version: 25.3.0
+        specifier: ^24.0.0
+        version: 24.10.13
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -5887,6 +5887,7 @@ snapshots:
   '@types/node@25.3.0':
     dependencies:
       undici-types: 7.18.2
+    optional: true
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -9178,7 +9179,8 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici-types@7.18.2: {}
+  undici-types@7.18.2:
+    optional: true
 
   undici@7.22.0: {}
 
