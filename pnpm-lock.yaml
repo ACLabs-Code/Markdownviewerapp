@@ -123,7 +123,7 @@ importers:
         version: 4.2.1
       '@types/node':
         specifier: ^24.0.0
-        version: 24.10.13
+        version: 24.11.0
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -160,7 +160,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
-        version: 24.10.13
+        version: 24.11.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -182,7 +182,7 @@ importers:
         version: 4.2.1
       '@types/node':
         specifier: ^24.0.0
-        version: 24.10.13
+        version: 24.11.0
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -1569,8 +1569,8 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@24.10.13':
-    resolution: {integrity: sha512-oH72nZRfDv9lADUBSo104Aq7gPHpQZc4BTx38r9xf9pg5LfP6EzSyH2n7qFmmxRQXh7YlUXODcYsg6PuTDSxGg==}
+  '@types/node@24.11.0':
+    resolution: {integrity: sha512-fPxQqz4VTgPI/IQ+lj9r0h+fDR66bzoeMGHp8ASee+32OSGIkeASsoZuJixsQoVef1QJbeubcPBxKk22QVoWdw==}
 
   '@types/node@25.3.0':
     resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
@@ -5726,7 +5726,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
       '@types/responselike': 1.0.3
 
   '@types/d3-array@3.2.2': {}
@@ -5858,7 +5858,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
 
   '@types/geojson@7946.0.16': {}
 
@@ -5872,7 +5872,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
 
   '@types/mdast@4.0.4':
     dependencies:
@@ -5880,7 +5880,7 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@24.10.13':
+  '@types/node@24.11.0':
     dependencies:
       undici-types: 7.16.0
 
@@ -5893,7 +5893,7 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
       xmlbuilder: 11.0.1
     optional: true
 
@@ -5913,7 +5913,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
 
   '@types/sarif@2.1.7': {}
 
@@ -5931,7 +5931,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.56.1(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)':
@@ -6923,7 +6923,7 @@ snapshots:
   electron@40.6.1:
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 24.10.13
+      '@types/node': 24.11.0
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
