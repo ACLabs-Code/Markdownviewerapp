@@ -1,8 +1,8 @@
 # Markdown Viewer App
 
-A modern, browser-based markdown viewer designed for local development and reading of markdown files.
+A modern markdown viewer available as a web app, desktop app (Electron), and VS Code extension — designed for local development and reading of markdown files.
 
-Edit your markdown files in your favorite editor while MarkdownViewer automatically refreshes in your browser, giving you instant visual feedback as you write. Perfect for drafting documentation, README files, or any markdown content. Also serves as a clean, distraction-free way to read rendered markdown files.
+Edit your markdown files in your favorite editor while MarkdownViewer automatically refreshes, giving you instant visual feedback as you write. Perfect for drafting documentation, README files, or any markdown content. Also serves as a clean, distraction-free way to read rendered markdown files.
 
 ## Live Demo
 
@@ -15,6 +15,8 @@ Edit your markdown files in your favorite editor while MarkdownViewer automatica
 - **Mermaid diagrams** - renders flowcharts, sequence diagrams, and more
 - **Syntax highlighting** - beautiful code blocks with syntax coloring
 - **Light/dark themes** - matches your system preference or toggle manually
+- **Desktop app** - native Electron app with system file watching (macOS, Windows, Linux)
+- **VS Code extension** - preview markdown in a panel beside your editor, updates live as you type
 
 ## Quick Start
 
