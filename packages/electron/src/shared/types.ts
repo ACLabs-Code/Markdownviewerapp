@@ -18,5 +18,16 @@ export interface ElectronAPI {
   unwatchFile: (filePath: string) => void;
   onFileChanged: (callback: (data: FileChangedPayload) => void) => () => void;
   onMenuOpenFile: (callback: (result: OpenFileResult) => void) => () => void;
-  platform: NodeJS.Platform;
+  platform:
+    | 'aix'
+    | 'android'
+    | 'darwin'
+    | 'freebsd'
+    | 'haiku'
+    | 'linux'
+    | 'openbsd'
+    | 'sunos'
+    | 'win32'
+    | 'cygwin'
+    | 'netbsd';
 }
