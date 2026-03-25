@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from 'next-themes';
 import { toast } from 'sonner';
-import { FileText, Upload, RefreshCw, Eye, EyeOff, Github, FileCode } from 'lucide-react';
+import { FileText, Upload, RefreshCw, Eye, EyeOff, FileCode } from 'lucide-react';
 import { MarkdownViewer, ThemeToggle, ThemedToaster } from '@mdviewer/core';
 import type { FileHandle } from '@mdviewer/core';
 import { RendererFileProvider, RendererFileWatcher } from './fileAdapter';
@@ -263,7 +263,6 @@ export default function App() {
 
         <footer className="py-6 text-center text-zinc-400 text-sm border-t border-zinc-200 dark:border-zinc-800 mt-auto bg-white/50 dark:bg-zinc-950/50 backdrop-blur-sm">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Github size={16} />
             <span>GitHub Flavored Markdown Supported</span>
           </div>
           <p>Made with ❤️ by AC Labs</p>
