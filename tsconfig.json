@@ -18,7 +18,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     /* Paths */
-    "baseUrl": ".",
     "paths": {
       "@mdviewer/core": ["./packages/core/src"],
       "@mdviewer/platform-adapters": ["./packages/platform-adapters/src"]

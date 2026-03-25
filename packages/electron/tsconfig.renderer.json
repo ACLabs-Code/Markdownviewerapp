@@ -7,7 +7,6 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "paths": {
       "@mdviewer/core": ["../core/src/index.ts"],
       "@mdviewer/core/styles": ["../core/src/styles/index.css"]
