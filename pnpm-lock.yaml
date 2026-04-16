@@ -195,7 +195,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@types/vscode':
         specifier: ^1.85.0
-        version: 1.115.0
+        version: 1.116.0
       '@vscode/vsce':
         specifier: ^3.0.0
         version: 3.7.1
@@ -1570,8 +1570,8 @@ packages:
   '@types/verror@1.10.11':
     resolution: {integrity: sha512-RlDm9K7+o5stv0Co8i8ZRGxDbrTxhJtgjqjFyVh/tXQyl/rYtTKlnTvZ88oSTeYREWurwx20Js4kTuKCsFkUtg==}
 
-  '@types/vscode@1.115.0':
-    resolution: {integrity: sha512-/M8cdznOlqtMqduHKKlIF00v4eum4ZWKgn8YoPRKcN6PDdvoWeeqDaQSnw63ipDbq1Uzz78Wndk/d0uSPwORfA==}
+  '@types/vscode@1.116.0':
+    resolution: {integrity: sha512-sYHp4MO6BqJ2PD7Hjt0hlIS3tMaYsVPJrd0RUjDJ8HtOYnyJIEej0bLSccM8rE77WrC+Xox/kdBwEFDO8MsxNA==}
 
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -5887,7 +5887,7 @@ snapshots:
   '@types/verror@1.10.11':
     optional: true
 
-  '@types/vscode@1.115.0': {}
+  '@types/vscode@1.116.0': {}
 
   '@types/yauzl@2.10.3':
     dependencies:
