@@ -14,7 +14,9 @@
   },
   "pnpm": {
     "auditConfig": {
-      "ignoreGhsas": ["GHSA-w5hq-g745-h8pq"]
+      "ignoreGhsas": [
+        "GHSA-w5hq-g745-h8pq"
+      ]
     },
     "overrides": {
       "lodash-es": ">=4.18.1",
