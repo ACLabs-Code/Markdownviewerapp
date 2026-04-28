@@ -3,6 +3,10 @@
   "extends": ["config:recommended"],
   "packageRules": [
     {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
       "matchPackageNames": ["eslint", "@eslint/js"],
       "allowedVersions": "<10.0.0",
       "description": "Pin ESLint to v9.x until eslint-plugin-react-hooks supports v10"
