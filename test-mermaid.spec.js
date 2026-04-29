@@ -10,11 +10,12 @@ async function testMermaidRendering() {
 
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+  const baseUrl = process.env.BASE_URL || 'http://localhost:5173';
 
   try {
     // Navigate to the app
-    console.log('Navigating to http://localhost:5173...');
-    await page.goto('http://localhost:5173');
+    console.log(`Navigating to ${baseUrl}...`);
+    await page.goto(baseUrl);
     await page.waitForLoadState('networkidle');
 
     // Take screenshot of initial state
