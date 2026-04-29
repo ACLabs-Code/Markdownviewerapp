@@ -83,7 +83,7 @@ Platform-specific implementations of `IFileProvider` and `IFileWatcher`:
 
 - `WebFileProvider` / `WebFileWatcher` — File System Access API with legacy `<input>` fallback
 - `VSCodeFileProvider` / `VSCodeFileWatcher` — VSCode workspace API + native file system watchers
-- `ElectronFileProvider` / `ElectronFileWatcher` — Node.js fs + chokidar (note: unsafe ipcRenderer, not used by electron package)
+- `ElectronFileProvider` / `ElectronFileWatcher` — Node.js fs + chokidar (uses direct/unsafe `ipcRenderer` access and is intentionally **not** used by the Electron app; Electron uses `RendererFileProvider` / `RendererFileWatcher` instead)
 
 **Platform Abstraction Interfaces:**
 
