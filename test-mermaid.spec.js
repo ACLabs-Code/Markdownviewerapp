@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const HTML_SNIPPET_LENGTH = 500;
+const HTML_SNIPPET_LENGTH = 500;
 
 async function testMermaidRendering() {
   console.log('Starting Playwright test...\n');
@@ -131,7 +132,7 @@ async function testMermaidRendering() {
         // Get the HTML of the first diagram to inspect structure
         console.log('\n--- First Diagram HTML Structure ---');
         const firstDiagramHTML = await mermaidContainers.nth(0).innerHTML();
-        // Just show a snippet
+        console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
         console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
       }
 
