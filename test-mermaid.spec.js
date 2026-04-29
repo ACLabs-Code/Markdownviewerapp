@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const HTML_SNIPPET_LENGTH = 500;
+const SEQUENCE_DIAGRAM_INDEX = 1;
+const STATE_DIAGRAM_INDEX = 3;
+const GIT_GRAPH_DIAGRAM_INDEX = 4;
 
 async function testMermaidRendering() {
   console.log('Starting Playwright test...\n');
@@ -82,9 +85,9 @@ async function testMermaidRendering() {
         }
 
         // Analyze second diagram (sequence diagram) if exists
-        if (svgCount > 1) {
+        if (svgCount > SEQUENCE_DIAGRAM_INDEX) {
           console.log('\n--- Analyzing Diagram 2: Sequence Diagram ---');
-          const secondSvg = svgs.nth(1);
+          const secondSvg = svgs.nth(SEQUENCE_DIAGRAM_INDEX);
           const bbox2 = await secondSvg.boundingBox();
           if (bbox2) {
             console.log(`SVG dimensions: ${Math.round(bbox2.width)}x${Math.round(bbox2.height)}`);
@@ -96,9 +99,9 @@ async function testMermaidRendering() {
         }
 
         // Analyze state diagram if exists
-        if (svgCount > 3) {
+        if (svgCount > STATE_DIAGRAM_INDEX) {
           console.log('\n--- Analyzing Diagram 4: State Diagram ---');
-          const fourthSvg = svgs.nth(3);
+          const fourthSvg = svgs.nth(STATE_DIAGRAM_INDEX);
           const bbox4 = await fourthSvg.boundingBox();
           if (bbox4) {
             console.log(`SVG dimensions: ${Math.round(bbox4.width)}x${Math.round(bbox4.height)}`);
@@ -110,9 +113,9 @@ async function testMermaidRendering() {
         }
 
         // Analyze git graph if exists
-        if (svgCount > 4) {
+        if (svgCount > GIT_GRAPH_DIAGRAM_INDEX) {
           console.log('\n--- Analyzing Diagram 5: Git Graph ---');
-          const fifthSvg = svgs.nth(4);
+          const fifthSvg = svgs.nth(GIT_GRAPH_DIAGRAM_INDEX);
           const bbox5 = await fifthSvg.boundingBox();
           if (bbox5) {
             console.log(`SVG dimensions: ${Math.round(bbox5.width)}x${Math.round(bbox5.height)}`);
