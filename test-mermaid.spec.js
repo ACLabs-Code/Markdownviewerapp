@@ -147,6 +147,7 @@ async function testMermaidRendering() {
     }
   } catch (error) {
     console.error('❌ Error during test:', error);
+    process.exitCode = 1;
   } finally {
     await browser.close();
   }
