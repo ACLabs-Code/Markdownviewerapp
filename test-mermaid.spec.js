@@ -147,6 +147,7 @@ async function testMermaidRendering() {
       console.log('❌ No file input found - app may be in File System Access API only mode');
     }
   } catch (error) {
+    process.exitCode = 1;
     console.error('❌ Error during test:', error);
     process.exitCode = 1;
   } finally {
