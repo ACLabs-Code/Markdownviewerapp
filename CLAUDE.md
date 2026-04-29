@@ -83,7 +83,7 @@ Platform-specific implementations of `IFileProvider` and `IFileWatcher`:
 
 - `WebFileProvider` / `WebFileWatcher` — File System Access API with legacy `<input>` fallback
 - `VSCodeFileProvider` / `VSCodeFileWatcher` — VSCode workspace API + native file system watchers
-- `ElectronFileProvider` / `ElectronFileWatcher` — Node.js fs + chokidar (note: unsafe ipcRenderer, not used by electron package)
+- `ElectronFileProvider` / `ElectronFileWatcher` — Node.js fs + chokidar (uses direct/unsafe `ipcRenderer` access and is intentionally **not** used by the Electron app; Electron uses `RendererFileProvider` / `RendererFileWatcher` instead)
 
 **Platform Abstraction Interfaces:**
 
@@ -192,7 +192,7 @@ make vsce-install  # install .vsix into VS Code
 **Known follow-up items:**
 
 - `webview.js` is ~12MB (Mermaid bundled as IIFE). Only loaded inside the webview panel so doesn't affect activation time, but could be slimmed by lazy-loading Mermaid after initial render.
-- The import alias `@mdviewer/platform-adapters-vscode` (hyphen, not `/`) is a workaround for `moduleResolution: "node"` not supporting subpath imports in `paths`. Fix: change `moduleResolution` to `"bundler"` in `tsconfig.json` and restore `@mdviewer/platform-adapters/vscode`.
+- The import alias `@mdviewer/platform-adapters-vscode` (hyphen, not `/`) is a workaround for `moduleResolution: "node"` not supporting subpath imports in `paths`. Fix: change `moduleResolution` to `"bundler"` in `packages/vscode-extension/tsconfig.json` and restore `@mdviewer/platform-adapters/vscode`.
 
 ## Build Configuration
 
