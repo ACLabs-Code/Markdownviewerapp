@@ -134,7 +134,6 @@ async function testMermaidRendering() {
         // Get the HTML of the first diagram to inspect structure
         const firstDiagramHTML = await mermaidContainers.nth(0).innerHTML();
         console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
-        console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
       }
 
       console.log('\n✅ Test complete!');
