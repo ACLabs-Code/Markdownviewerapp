@@ -131,7 +131,7 @@ async function testMermaidRendering() {
         // Get the HTML of the first diagram to inspect structure
         console.log('\n--- First Diagram HTML Structure ---');
         const firstDiagramHTML = await mermaidContainers.nth(0).innerHTML();
-        // Just show a snippet
+        console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
         console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
       }
 
@@ -147,6 +147,7 @@ async function testMermaidRendering() {
       console.log('❌ No file input found - app may be in File System Access API only mode');
     }
   } catch (error) {
+    process.exitCode = 1;
     console.error('❌ Error during test:', error);
     process.exitCode = 1;
   } finally {
