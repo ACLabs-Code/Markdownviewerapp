@@ -35,7 +35,7 @@ async function testMermaidRendering() {
 
       // Wait for content to render
       console.log('Waiting for content to render...');
-      await page.waitForTimeout(4000); // Wait 4 seconds for Mermaid diagrams
+      await page.waitForSelector('.mermaid-container svg', { state: 'visible', timeout: 10000 });
       await page.waitForLoadState('networkidle');
 
       // Take screenshot of rendered content
