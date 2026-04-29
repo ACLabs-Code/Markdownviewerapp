@@ -205,7 +205,7 @@ make vsce-install  # install .vsix into VS Code
 pnpm run dev
 
 # GitHub Pages (subdirectory deployment)
-BASE_PATH=/Markdownviewerapp pnpm run build
+BASE_PATH=/Markdownviewerapp/ pnpm run build
 ```
 
 The `deploy.yml` workflow sets `BASE_PATH=/Markdownviewerapp/` automatically.
