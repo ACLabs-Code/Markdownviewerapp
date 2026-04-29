@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const HTML_SNIPPET_LENGTH = 500;
-const HTML_SNIPPET_LENGTH = 500;
 
 async function testMermaidRendering() {
   console.log('Starting Playwright test...\n');
