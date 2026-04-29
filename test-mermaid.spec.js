@@ -132,7 +132,6 @@ async function testMermaidRendering() {
         console.log(`\nForeignObject elements (HTML labels): ${foreignObjectCount}`);
 
         // Get the HTML of the first diagram to inspect structure
-        console.log('\n--- First Diagram HTML Structure ---');
         const firstDiagramHTML = await mermaidContainers.nth(0).innerHTML();
         console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
         console.log(firstDiagramHTML.substring(0, HTML_SNIPPET_LENGTH) + '...');
