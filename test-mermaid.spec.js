@@ -10,11 +10,12 @@ async function testMermaidRendering() {
 
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+  const baseUrl = process.env.BASE_URL || 'http://localhost:5173';
 
   try {
     // Navigate to the app
-    console.log('Navigating to http://localhost:5173...');
-    await page.goto('http://localhost:5173');
+    console.log(`Navigating to ${baseUrl}...`);
+    await page.goto(baseUrl);
     await page.waitForLoadState('networkidle');
 
     // Take screenshot of initial state
@@ -35,7 +36,7 @@ async function testMermaidRendering() {
 
       // Wait for content to render
       console.log('Waiting for content to render...');
-      await page.waitForTimeout(4000); // Wait 4 seconds for Mermaid diagrams
+      await page.waitForSelector('.mermaid-container svg', { state: 'visible', timeout: 10000 });
       await page.waitForLoadState('networkidle');
 
       // Take screenshot of rendered content
