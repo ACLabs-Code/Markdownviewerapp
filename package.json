@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "pnpm@10.33.3",
+  "packageManager": "pnpm@10.33.4",
   "scripts": {
     "dev": "pnpm --filter @mdviewer/web dev",
     "build": "pnpm --filter @mdviewer/web build",
