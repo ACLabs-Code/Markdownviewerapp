@@ -333,15 +333,14 @@ Approved builds are recorded in `pnpm-workspace.yaml` under `allowBuilds`:
 
 ```yaml
 allowBuilds:
-  '@parcel/watcher': true   # native filesystem watcher addon
+  '@parcel/watcher': true # native filesystem watcher addon
   '@vscode/vsce-sign': true # native signing addon
   electron-winstaller: true # native Windows installer tooling
-  esbuild: true             # downloads platform binary at install
-  keytar: true              # native OS keychain addon
+  esbuild: true # downloads platform binary at install
+  keytar: true # native OS keychain addon
 ```
 
 **When adding a new native dependency:** run `pnpm approve-builds --all` (or `pnpm approve-builds <pkg>`) to add it to `pnpm-workspace.yaml`. Commit that file. Forgetting causes a loud CI failure at `pnpm install` — nothing silently broken.
-
 
 ## Troubleshooting
 
