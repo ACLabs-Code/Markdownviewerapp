@@ -318,6 +318,30 @@ File System Access API: Chrome/Edge 86+ only, not Safari/Firefox as of 2025. App
 
 Generated from Figma Make (design-to-code tool). Explains why there are 48+ UI components in `packages/web/src/components/ui/`, most unused — these are shadcn/ui components (MIT licensed) from the generation template.
 
+## Dependency Management
+
+### Native Packages and pnpm v11 Build Approval
+
+pnpm v11 blocks all package install scripts by default. Packages with native binaries or compiled addons must be explicitly approved, or `pnpm install` fails with:
+
+```
+[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: <package>@<version>, ...
+Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.
+```
+
+Approved builds are recorded in `pnpm-workspace.yaml` under `allowBuilds`:
+
+```yaml
+allowBuilds:
+  '@parcel/watcher': true # native filesystem watcher addon
+  '@vscode/vsce-sign': true # native signing addon
+  electron-winstaller: true # native Windows installer tooling
+  esbuild: true # downloads platform binary at install
+  keytar: true # native OS keychain addon
+```
+
+**When adding a new native dependency:** run `pnpm approve-builds --all` (or `pnpm approve-builds <pkg>`) to add it to `pnpm-workspace.yaml`. Commit that file. Forgetting causes a loud CI failure at `pnpm install` — nothing silently broken.
+
 ## Troubleshooting
 
 ### TypeScript Build Errors After Git Operations

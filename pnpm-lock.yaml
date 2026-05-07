@@ -4,10 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  lodash-es: '>=4.18.1'
-  dompurify: '>=3.4.0'
-
 importers:
 
   .:
@@ -84,7 +80,7 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.2.4
-        version: 4.2.4(vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -241,7 +237,7 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.2.4
-        version: 4.2.4(vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -250,7 +246,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
         specifier: 6.0.1
-        version: 6.0.1(vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 6.0.1(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
       tailwindcss:
         specifier: 4.2.4
         version: 4.2.4
@@ -259,7 +255,7 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.11
-        version: 8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1)
+        version: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
 
 packages:
 
@@ -1528,9 +1524,6 @@ packages:
 
   '@types/node@24.12.2':
     resolution: {integrity: sha512-A1sre26ke7HDIuY/M23nd9gfB+nrmhtYyMINbjI1zHJxYteKR6qSMX56FsmjMcDb3SMcjJg5BiRRgOCC/yBD0g==}
-
-  '@types/node@25.3.0':
-    resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -3134,6 +3127,9 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
+  lodash-es@4.17.23:
+    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
+
   lodash-es@4.18.1:
     resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
 
@@ -4268,9 +4264,6 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici-types@7.18.2:
-    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
-
   undici@7.25.0:
     resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
     engines: {node: '>=20.18.1'}
@@ -4751,12 +4744,12 @@ snapshots:
     dependencies:
       '@chevrotain/gast': 11.1.2
       '@chevrotain/types': 11.1.2
-      lodash-es: 4.18.1
+      lodash-es: 4.17.23
 
   '@chevrotain/gast@11.1.2':
     dependencies:
       '@chevrotain/types': 11.1.2
-      lodash-es: 4.18.1
+      lodash-es: 4.17.23
 
   '@chevrotain/regexp-to-ast@11.1.2': {}
 
@@ -5643,12 +5636,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.2.4
       '@tailwindcss/oxide-win32-x64-msvc': 4.2.4
 
-  '@tailwindcss/vite@4.2.4(vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1))':
+  '@tailwindcss/vite@4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))':
     dependencies:
       '@tailwindcss/node': 4.2.4
       '@tailwindcss/oxide': 4.2.4
       tailwindcss: 4.2.4
-      vite: 8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1)
+      vite: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
 
   '@textlint/ast-node-types@15.5.4': {}
 
@@ -5846,11 +5839,6 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  '@types/node@25.3.0':
-    dependencies:
-      undici-types: 7.18.2
-    optional: true
-
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/plist@3.0.5':
@@ -6002,10 +5990,10 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  '@vitejs/plugin-react@6.0.1(vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1))':
+  '@vitejs/plugin-react@6.0.1(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.7
-      vite: 8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1)
+      vite: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
 
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     optional: true
@@ -6383,7 +6371,7 @@ snapshots:
       '@chevrotain/regexp-to-ast': 11.1.2
       '@chevrotain/types': 11.1.2
       '@chevrotain/utils': 11.1.2
-      lodash-es: 4.18.1
+      lodash-es: 4.17.23
 
   chokidar@5.0.0:
     dependencies:
@@ -7692,6 +7680,8 @@ snapshots:
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
+
+  lodash-es@4.17.23: {}
 
   lodash-es@4.18.1: {}
 
@@ -9144,9 +9134,6 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici-types@7.18.2:
-    optional: true
-
   undici@7.25.0: {}
 
   unicorn-magic@0.1.0: {}
@@ -9257,7 +9244,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.0.11(@types/node@25.3.0)(esbuild@0.28.0)(jiti@2.6.1):
+  vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -9265,7 +9252,7 @@ snapshots:
       rolldown: 1.0.0-rc.18
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 25.3.0
+      '@types/node': 24.12.2
       esbuild: 0.28.0
       fsevents: 2.3.3
       jiti: 2.6.1
