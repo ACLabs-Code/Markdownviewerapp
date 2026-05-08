@@ -1,15 +1,192 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended",
+    "group:monorepos",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "schedule": ["before 6am on Monday"],
+  "timezone": "America/Vancouver",
+  "prConcurrentLimit": 6,
+  "prHourlyLimit": 2,
+  "minimumReleaseAge": "3 days",
+  "rangeStrategy": "replace",
   "packageRules": [
     {
+      "description": "Patch automerge — global default",
       "matchUpdateTypes": ["patch"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     },
     {
+      "description": "Major updates — always manual",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "major-update"]
+    },
+    {
+      "description": "React ecosystem — group react + types, automerge minor",
+      "groupName": "React ecosystem",
+      "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Tailwind ecosystem — group all three, automerge minor, keep pins in sync",
+      "groupName": "Tailwind ecosystem",
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/vite", "@tailwindcss/cli"],
+      "rangeStrategy": "replace",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "TypeScript ecosystem — group ts + typescript-eslint, automerge minor",
+      "groupName": "TypeScript ecosystem",
+      "matchPackageNames": [
+        "typescript",
+        "typescript-eslint",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser"
+      ],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Build tools — group vite + esbuild + plugin, automerge minor",
+      "groupName": "Build tools",
+      "matchPackageNames": ["vite", "esbuild", "@vitejs/plugin-react", "concurrently"],
+      "rangeStrategy": "replace",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Linting ecosystem — group eslint + prettier, automerge minor",
+      "groupName": "Linting ecosystem",
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/js",
+        "eslint-plugin-react-hooks",
+        "eslint-plugin-react-refresh",
+        "globals",
+        "prettier"
+      ],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "ESLint v9.x pin — react-hooks plugin not compatible with v10",
       "matchPackageNames": ["eslint", "@eslint/js"],
-      "allowedVersions": "<10.0.0",
-      "description": "Pin ESLint to v9.x until eslint-plugin-react-hooks supports v10"
+      "allowedVersions": "<10.0.0"
+    },
+    {
+      "description": "Markdown rendering — group react-markdown + mermaid + syntax highlighter, automerge minor",
+      "groupName": "Markdown rendering",
+      "matchPackageNames": [
+        "react-markdown",
+        "remark-gfm",
+        "react-syntax-highlighter",
+        "@types/react-syntax-highlighter",
+        "mermaid"
+      ],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Pinned UI libraries — patch automerge only (shadcn-sourced pins, visual regression risk on minor)",
+      "groupName": "Pinned UI libraries",
+      "matchPackageNames": [
+        "lucide-react",
+        "sonner",
+        "@radix-ui/react-dropdown-menu",
+        "tw-animate-css",
+        "next-themes"
+      ],
+      "rangeStrategy": "replace",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Pinned UI libraries — minor/major require manual review",
+      "groupName": "Pinned UI libraries",
+      "matchPackageNames": [
+        "lucide-react",
+        "sonner",
+        "@radix-ui/react-dropdown-menu",
+        "tw-animate-css",
+        "next-themes"
+      ],
+      "matchUpdateTypes": ["minor", "major"],
+      "automerge": false,
+      "labels": ["dependencies", "ui-pin-review"]
+    },
+    {
+      "description": "Node types — minor automerge",
+      "groupName": "Node types",
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Playwright — manual (browser binaries + API changes not caught by build/typecheck)",
+      "matchPackageNames": ["@playwright/test"],
+      "automerge": false,
+      "labels": ["dependencies", "testing"]
+    },
+    {
+      "description": "Electron ecosystem — manual for all; affects signed binaries, Chromium, and packager",
+      "groupName": "Electron ecosystem",
+      "matchPackageNames": ["electron", "electron-builder"],
+      "automerge": false,
+      "labels": ["dependencies", "platform-specific"]
+    },
+    {
+      "description": "VS Code ecosystem — manual for all; @types/vscode version couples to engines.vscode in package.json",
+      "groupName": "VS Code ecosystem",
+      "matchPackageNames": ["@types/vscode", "@vscode/vsce", "@vscode/vsce-sign"],
+      "automerge": false,
+      "labels": ["dependencies", "platform-specific"]
+    },
+    {
+      "description": "Security overrides (pnpm.overrides) — patch automerge, minor manual",
+      "groupName": "Security overrides",
+      "matchPackageNames": ["lodash-es", "dompurify", "uuid"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "labels": ["security"]
+    },
+    {
+      "description": "Security overrides minor/major — manual review",
+      "groupName": "Security overrides",
+      "matchPackageNames": ["lodash-es", "dompurify", "uuid"],
+      "matchUpdateTypes": ["minor", "major"],
+      "automerge": false,
+      "labels": ["security"]
     }
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "schedule": ["at any time"],
+    "automerge": false,
+    "labels": ["security", "vulnerability"]
+  }
 }
