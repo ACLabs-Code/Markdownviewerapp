@@ -86,11 +86,6 @@
       "platformAutomerge": true
     },
     {
-      "description": "ESLint v9.x pin — react-hooks plugin not compatible with v10",
-      "matchPackageNames": ["eslint", "@eslint/js"],
-      "allowedVersions": "<10.0.0"
-    },
-    {
       "description": "Markdown rendering — group react-markdown + mermaid + syntax highlighter, automerge minor",
       "groupName": "Markdown rendering",
       "matchPackageNames": [
