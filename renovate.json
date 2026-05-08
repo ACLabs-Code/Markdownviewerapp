@@ -34,7 +34,6 @@
       "description": "Tailwind ecosystem — group all three, automerge minor, keep pins in sync",
       "groupName": "Tailwind ecosystem",
       "matchPackageNames": ["tailwindcss", "@tailwindcss/vite", "@tailwindcss/cli"],
-      "rangeStrategy": "replace",
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "automergeType": "pr",
@@ -58,7 +57,6 @@
       "description": "Build tools — group vite + esbuild + plugin, automerge minor",
       "groupName": "Build tools",
       "matchPackageNames": ["vite", "esbuild", "@vitejs/plugin-react", "concurrently"],
-      "rangeStrategy": "replace",
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "automergeType": "pr",
@@ -105,7 +103,6 @@
         "tw-animate-css",
         "next-themes"
       ],
-      "rangeStrategy": "replace",
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "pr",
