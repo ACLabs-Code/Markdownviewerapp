@@ -1,11 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "group:monorepos",
-    ":dependencyDashboard",
-    ":semanticCommits"
-  ],
+  "extends": ["config:recommended", "group:monorepos", ":dependencyDashboard", ":semanticCommits"],
   "schedule": ["before 6am on Monday"],
   "timezone": "America/Vancouver",
   "prConcurrentLimit": 6,
