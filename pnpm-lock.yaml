@@ -80,7 +80,7 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.2.4
-        version: 4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 4.2.4(vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -123,7 +123,7 @@ importers:
         version: 4.2.4
       '@types/node':
         specifier: ^24.0.0
-        version: 24.12.2
+        version: 24.12.3
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -160,7 +160,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
-        version: 24.12.2
+        version: 24.12.3
       typescript:
         specifier: ^6.0.0
         version: 6.0.3
@@ -182,7 +182,7 @@ importers:
         version: 4.2.4
       '@types/node':
         specifier: ^24.0.0
-        version: 24.12.2
+        version: 24.12.3
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -237,7 +237,7 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.2.4
-        version: 4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 4.2.4(vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -246,7 +246,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
         specifier: 6.0.1
-        version: 6.0.1(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))
+        version: 6.0.1(vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1))
       tailwindcss:
         specifier: 4.2.4
         version: 4.2.4
@@ -255,7 +255,7 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.11
-        version: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
+        version: 8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1)
 
 packages:
 
@@ -1525,6 +1525,9 @@ packages:
   '@types/node@24.12.2':
     resolution: {integrity: sha512-A1sre26ke7HDIuY/M23nd9gfB+nrmhtYyMINbjI1zHJxYteKR6qSMX56FsmjMcDb3SMcjJg5BiRRgOCC/yBD0g==}
 
+  '@types/node@24.12.3':
+    resolution: {integrity: sha512-8oljBDGun9cIsZRJR6fkihn0TSXJI0UDOOhncYaERq6M0JMDoPLxyscwruJcb4GKS6dvK/d8xebYBg27h/duaQ==}
+
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -2623,6 +2626,10 @@ packages:
 
   fs-extra@11.3.4:
     resolution: {integrity: sha512-CTXd6rk/M3/ULNQj8FBqBWHYBVYybQ3VPBw0xGKFe3tuH7ytT6ACnvzpIQ3UZtB8yvUKC2cXn1a+x+5EVQLovA==}
+    engines: {node: '>=14.14'}
+
+  fs-extra@11.3.5:
+    resolution: {integrity: sha512-eKpRKAovdpZtR1WopLHxlBWvAgPny3c4gX1G5Jhwmmw4XJj0ifSD5qB5TOo8hmA0wlRKDAOAhEE1yVPgs6Fgcg==}
     engines: {node: '>=14.14'}
 
   fs-extra@7.0.1:
@@ -4854,7 +4861,7 @@ snapshots:
     dependencies:
       cross-dirname: 0.1.0
       debug: 4.4.3
-      fs-extra: 11.3.4
+      fs-extra: 11.3.5
       minimist: 1.2.8
       postject: 1.0.0-alpha.6
     transitivePeerDependencies:
@@ -5636,12 +5643,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.2.4
       '@tailwindcss/oxide-win32-x64-msvc': 4.2.4
 
-  '@tailwindcss/vite@4.2.4(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))':
+  '@tailwindcss/vite@4.2.4(vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1))':
     dependencies:
       '@tailwindcss/node': 4.2.4
       '@tailwindcss/oxide': 4.2.4
       tailwindcss: 4.2.4
-      vite: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
+      vite: 8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1)
 
   '@textlint/ast-node-types@15.5.4': {}
 
@@ -5839,6 +5846,10 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/node@24.12.3':
+    dependencies:
+      undici-types: 7.16.0
+
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/plist@3.0.5':
@@ -5990,10 +6001,10 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  '@vitejs/plugin-react@6.0.1(vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1))':
+  '@vitejs/plugin-react@6.0.1(vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.7
-      vite: 8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)
+      vite: 8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1)
 
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     optional: true
@@ -7162,6 +7173,13 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 6.2.1
       universalify: 2.0.1
+
+  fs-extra@11.3.5:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.2.1
+      universalify: 2.0.1
+    optional: true
 
   fs-extra@7.0.1:
     dependencies:
@@ -9244,7 +9262,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.0.11(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1):
+  vite@8.0.11(@types/node@24.12.3)(esbuild@0.28.0)(jiti@2.6.1):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -9252,7 +9270,7 @@ snapshots:
       rolldown: 1.0.0-rc.18
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 24.12.2
+      '@types/node': 24.12.3
       esbuild: 0.28.0
       fsevents: 2.3.3
       jiti: 2.6.1
