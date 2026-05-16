@@ -94,10 +94,17 @@
       "platformAutomerge": true
     },
     {
+      "description": "lucide-react — minor automerge (icon library: minor = new icons only, no removals or API breaks)",
+      "matchPackageNames": ["lucide-react"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
       "description": "Pinned UI libraries — patch automerge only (shadcn-sourced pins, visual regression risk on minor)",
       "groupName": "Pinned UI libraries",
       "matchPackageNames": [
-        "lucide-react",
         "sonner",
         "@radix-ui/react-dropdown-menu",
         "tw-animate-css",
@@ -112,7 +119,6 @@
       "description": "Pinned UI libraries — minor/major require manual review",
       "groupName": "Pinned UI libraries",
       "matchPackageNames": [
-        "lucide-react",
         "sonner",
         "@radix-ui/react-dropdown-menu",
         "tw-animate-css",
@@ -121,6 +127,14 @@
       "matchUpdateTypes": ["minor", "major"],
       "automerge": false,
       "labels": ["dependencies", "ui-pin-review"]
+    },
+    {
+      "description": "pnpm — minor automerge (tooling only, CI catches any breakage)",
+      "matchPackageNames": ["pnpm"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     },
     {
       "description": "Node types — minor automerge",
