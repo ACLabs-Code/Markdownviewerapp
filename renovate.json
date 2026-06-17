@@ -97,6 +97,7 @@
       "description": "lucide-react — minor automerge (icon library: minor = new icons only, no removals or API breaks)",
       "matchPackageNames": ["lucide-react"],
       "matchUpdateTypes": ["patch", "minor"],
+      "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
