@@ -22,6 +22,12 @@
       "labels": ["dependencies", "major-update"]
     },
     {
+      "description": "TypeScript major — paused until @typescript-eslint supports TS7 (typescript-eslint#12518, closed not-planned; blocked on TS7.1 stable compiler API)",
+      "matchPackageNames": ["typescript"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
       "description": "React ecosystem — group react + types, automerge minor",
       "groupName": "React ecosystem",
       "matchPackageNames": ["react", "react-dom", "@types/react", "@types/react-dom"],
