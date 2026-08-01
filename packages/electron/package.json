@@ -30,6 +30,6 @@
     "electron": "^43.0.0",
     "electron-builder": "^26.0.0",
     "esbuild": "^0.28.0",
-    "typescript": "^6.0.0"
+    "typescript": "^7.0.0"
   }
 }
