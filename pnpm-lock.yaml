@@ -48,8 +48,8 @@ importers:
         specifier: 2.1.24
         version: 2.1.24(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       lucide-react:
-        specifier: 1.27.0
-        version: 1.27.0(react@19.2.6)
+        specifier: 1.29.0
+        version: 1.29.0(react@19.2.6)
       mermaid:
         specifier: ^11.12.3
         version: 11.14.0
@@ -103,8 +103,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       lucide-react:
-        specifier: 1.27.0
-        version: 1.27.0(react@19.2.6)
+        specifier: 1.29.0
+        version: 1.29.0(react@19.2.6)
       next-themes:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -220,8 +220,8 @@ importers:
         specifier: workspace:*
         version: link:../platform-adapters
       lucide-react:
-        specifier: 1.27.0
-        version: 1.27.0(react@19.2.6)
+        specifier: 1.29.0
+        version: 1.29.0(react@19.2.6)
       next-themes:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -3376,8 +3376,8 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@1.27.0:
-    resolution: {integrity: sha512-rJicGl/3Fly/E0rOH1YmPZ6e49JCnKknh1ox1vpHnkfjujAkKA6sqUZvH3MTAaXXjgexyUwgNwTJzTtYuAFYJw==}
+  lucide-react@1.29.0:
+    resolution: {integrity: sha512-Xs9QFG5+9sNX04MdKVT4++umA+hJ2qsJVlRlRWHQ7qZobXgMiNHSpZ5eZm8JUoGCdNyoEdXoEwa8HVr0DNjOQg==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -8035,7 +8035,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@1.27.0(react@19.2.6):
+  lucide-react@1.29.0(react@19.2.6):
     dependencies:
       react: 19.2.6
 
