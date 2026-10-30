@@ -173,7 +173,7 @@
       "labels": ["dependencies", "platform-specific"]
     },
     {
-      "description": "Security overrides (pnpm.overrides) — patch automerge, minor manual",
+      "description": "Security overrides (pnpm-workspace.yaml overrides) — patch automerge, minor manual",
       "groupName": "Security overrides",
       "matchPackageNames": ["lodash-es", "dompurify", "uuid"],
       "matchUpdateTypes": ["patch"],

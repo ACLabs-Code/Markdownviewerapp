@@ -342,6 +342,25 @@ allowBuilds:
 
 **When adding a new native dependency:** run `pnpm approve-builds --all` (or `pnpm approve-builds <pkg>`) to add it to `pnpm-workspace.yaml`. Commit that file. Forgetting causes a loud CI failure at `pnpm install` — nothing silently broken.
 
+### Security Overrides (pnpm 12)
+
+pnpm 12 no longer reads `pnpm.overrides` from `package.json` (it warns and ignores it). Overrides live in `pnpm-workspace.yaml`:
+
+```yaml
+overrides:
+  lodash-es: '>=4.18.1'
+  dompurify: '>=3.4.17'
+  uuid: '^11.1.1'
+```
+
+These pin patched versions of transitive dependencies pulled in by `mermaid`. `uuid` is capped at 11.x to avoid a major jump; Renovate proposes bumps via the "Security overrides" rules in `renovate.json` (minor/major are manual). Verify with `pnpm audit --audit-level=moderate --prod`.
+
+**Do not use `pnpm audit --ignore`:** since pnpm 12.16.0 it exits non-zero when vulnerabilities remain after ignoring (it used to always exit 0, which silently hid them), and it writes an `auditConfig.ignoreGhsas` block into `pnpm-workspace.yaml`. Fix the vulnerability with an override instead.
+
+### Renovate
+
+Config: `renovate.json`. Updates are scheduled `before 6am on Monday` (America/Vancouver), so packages showing as outdated midweek are usually just waiting for the schedule. Patch updates automerge; major updates, Electron, VS Code, Playwright, pinned UI libraries (minor/major) and security override minor/major are manual. After merging a PR that touches shared files (e.g. `pnpm-lock.yaml`), other open Renovate PRs need a rebase (tick the rebase checkbox in the PR body). The Dependency Dashboard is issue #10.
+
 ## Troubleshooting
 
 ### TypeScript Build Errors After Git Operations
@@ -389,7 +408,7 @@ make setup-full  # clean-deps → setup → setup-electron
 
 Location: `.github/workflows/`
 
-All workflows use pnpm exclusively (Node.js 24.x, pnpm cache).
+All workflows use pnpm exclusively (Node.js 26.x, pnpm cache).
 
 ### `ci.yml` — Pull Request Checks
 
@@ -408,7 +427,7 @@ URL: `https://aclabs-code.github.io/Markdownviewerapp`
 
 ### `security.yml` — Security Audit
 
-Weekly (Mondays 9am UTC), on PRs, and manual. Runs `pnpm audit --audit-level=moderate --prod` (production deps only). Uploads `pnpm-lock.yaml` as artifact.
+Weekly (Mondays 9am UTC), on PRs, and manual. Runs `pnpm audit --audit-level=moderate --prod` (production deps only) with no `--ignore` flags, so any moderate-or-higher vulnerability fails the job. Uploads `pnpm-lock.yaml` as artifact.
 
 ### `bundle-size.yml` — Bundle Size Monitoring
 
