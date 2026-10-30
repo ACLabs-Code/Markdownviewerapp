@@ -153,6 +153,12 @@
       "platformAutomerge": true
     },
     {
+      "description": "Electron @types/node — stay on the Node major bundled with Electron (Electron 45 ships Node 24); bump when Electron's bundled Node changes",
+      "matchPackageNames": ["@types/node"],
+      "matchFileNames": ["packages/electron/package.json"],
+      "allowedVersions": "<25"
+    },
+    {
       "description": "Playwright — manual (browser binaries + API changes not caught by build/typecheck)",
       "matchPackageNames": ["@playwright/test"],
       "automerge": false,
