@@ -1,7 +1,6 @@
 import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { toast } from 'sonner';
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme();
@@ -25,10 +24,7 @@ export function ThemeToggle() {
           sideOffset={5}
         >
           <DropdownMenu.Item
-            onClick={() => {
-              setTheme('light');
-              toast.success('Theme set to Light');
-            }}
+            onClick={() => setTheme('light')}
             className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 ${theme === 'light' ? 'bg-zinc-100 dark:bg-zinc-800 font-medium' : ''}`}
           >
             <Sun className="h-4 w-4" />
@@ -36,10 +32,7 @@ export function ThemeToggle() {
           </DropdownMenu.Item>
 
           <DropdownMenu.Item
-            onClick={() => {
-              setTheme('dark');
-              toast.success('Theme set to Dark');
-            }}
+            onClick={() => setTheme('dark')}
             className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 ${theme === 'dark' ? 'bg-zinc-100 dark:bg-zinc-800 font-medium' : ''}`}
           >
             <Moon className="h-4 w-4" />
@@ -47,10 +40,7 @@ export function ThemeToggle() {
           </DropdownMenu.Item>
 
           <DropdownMenu.Item
-            onClick={() => {
-              setTheme('system');
-              toast.success('Theme set to System');
-            }}
+            onClick={() => setTheme('system')}
             className={`flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 ${theme === 'system' ? 'bg-zinc-100 dark:bg-zinc-800 font-medium' : ''}`}
           >
             <Monitor className="h-4 w-4" />
