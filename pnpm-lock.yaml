@@ -261,32 +261,16 @@ importers:
         version: 6.0.3
 
   packages/electron:
-    dependencies:
+    devDependencies:
       '@mdviewer/core':
         specifier: workspace:*
         version: link:../core
-      lucide-react:
-        specifier: 1.61.0
-        version: 1.61.0(@types/react@19.2.14)(react@19.2.6)
-      next-themes:
-        specifier: 0.4.6
-        version: 0.4.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.6
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.6(react@19.2.6)
-      sonner:
-        specifier: 2.0.8
-        version: 2.0.8(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-    devDependencies:
       '@tailwindcss/cli':
         specifier: 4.3.3
         version: 4.3.3
       '@types/node':
-        specifier: ^26.0.0
-        version: 26.6.6
+        specifier: ^24.0.0
+        version: 24.12.2
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
@@ -308,6 +292,21 @@ importers:
       esbuild:
         specifier: ^0.28.0
         version: 0.28.0
+      lucide-react:
+        specifier: 1.61.0
+        version: 1.61.0(@types/react@19.2.14)(react@19.2.6)
+      next-themes:
+        specifier: 0.4.6
+        version: 0.4.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
+      sonner:
+        specifier: 2.0.8
+        version: 2.0.8(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       typescript:
         specifier: ^6.0.0
         version: 6.0.3
