@@ -53,7 +53,6 @@ export default function App() {
       setMarkdownContent(content);
       setIsLegacyMode(false);
       setIsWatching(fileProvider.supportsWatching());
-      toast.success(`Opened ${metadata.name}`);
     } catch (err: any) {
       if (err.message === 'FileSystemAccess API not supported') {
         // Graceful fallback to hidden file input for unsupported browsers
@@ -78,7 +77,6 @@ export default function App() {
       setFileHandle(null);
       setIsLegacyMode(true);
       setIsWatching(false);
-      toast.success(`Opened ${file.name} (Read-only mode)`);
       toast.info('Auto-reload is unavailable in this environment');
     } catch (error) {
       console.error('Error reading file:', error);
@@ -129,7 +127,6 @@ export default function App() {
             setIsLegacyMode(false);
             setIsWatching(true);
             setIsLoading(false);
-            toast.success(`Opened ${file.name}`);
             return;
           }
         } catch (err) {
@@ -155,7 +152,6 @@ export default function App() {
         setIsLegacyMode(true);
         setIsWatching(false);
         setIsLoading(false);
-        toast.success(`Opened ${file.name} (Read-only mode)`);
         toast.info('Auto-reload is unavailable for dropped files in this browser');
       } catch (error) {
         console.error('Error reading dropped file:', error);
@@ -175,7 +171,6 @@ export default function App() {
       setIsLoading(true);
       const content = await fileProvider.readFile(fileHandle);
       setMarkdownContent(content);
-      toast.success('Reloaded successfully');
     } catch (error) {
       console.error('Error reloading:', error);
       toast.error('Failed to reload. Try opening the file again.');
@@ -192,7 +187,6 @@ export default function App() {
     if (!fileHandle) return;
     const next = !isWatching;
     setIsWatching(next);
-    toast.info(next ? 'Watch mode enabled' : 'Watch mode disabled');
   };
 
   return (

@@ -51,7 +51,6 @@ export default function App() {
       setFileName(name);
       setMarkdownContent(content);
       setIsWatching(true);
-      toast.success(`Opened ${name}`);
     } catch {
       toast.error('Failed to open file');
     } finally {
@@ -109,7 +108,6 @@ export default function App() {
         setMarkdownContent(text);
         setFileHandle(null);
         setIsWatching(false);
-        toast.success(`Opened ${file.name}`);
         toast.info('Auto-reload unavailable — file path not accessible');
       } catch {
         toast.error('Failed to read file');
@@ -125,7 +123,6 @@ export default function App() {
       setIsLoading(true);
       const content = await fileProvider.readFile(fileHandle);
       setMarkdownContent(content);
-      toast.success('Reloaded successfully');
     } catch {
       toast.error('Failed to reload. Try opening the file again.');
     } finally {
@@ -137,7 +134,6 @@ export default function App() {
     if (!fileHandle) return;
     const next = !isWatching;
     setIsWatching(next);
-    toast.info(next ? 'Watch mode enabled' : 'Watch mode disabled');
   };
 
   return (

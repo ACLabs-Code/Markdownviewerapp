@@ -8,5 +8,5 @@ export function ThemedToaster() {
   const sonnerTheme =
     theme === 'dark' || theme === 'light' || theme === 'system' ? theme : 'system';
 
-  return <Toaster position="top-right" theme={sonnerTheme} />;
+  return <Toaster position="bottom-right" theme={sonnerTheme} closeButton duration={3000} />;
 }
