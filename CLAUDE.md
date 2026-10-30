@@ -156,6 +156,10 @@ make electron-package  # package into .dmg / .exe / .AppImage
 
 **Packaging:** `electron-builder.yml` — dmg (macOS), nsis (Windows), AppImage (Linux), outputs to `dist-package/`.
 
+**Dependencies live in `devDependencies`:** esbuild inlines every dependency into the three bundles, so nothing is needed at runtime. Keeping `react`, `@mdviewer/core`, etc. under `dependencies` makes electron-builder pack `node_modules` into the app (`app.asar` was 224 MB; now ~8 MB, `.dmg` ~116 MB). Add new bundled packages as `devDependencies`; only a package that must be `external` at runtime belongs in `dependencies`.
+
+**`@types/node` is pinned to `^24` in this package** (other packages use `^26`). Electron 45 bundles Node 24, so main/preload run on Node 24 and newer types could hide missing APIs. `renovate.json` caps it with `allowedVersions: "<25"`; raise both together when Electron's bundled Node changes (check with `ELECTRON_RUN_AS_NODE=1 <electron binary> -e "console.log(process.versions.node)"`).
+
 ### Package: `mdviewer-vscode`
 
 Location: `packages/vscode-extension/`
@@ -258,6 +262,8 @@ Toggle auto-reload on/off via Eye/EyeOff button in the UI.
 **Toast Integration:**
 
 `ThemedToaster` component (`packages/core/src/components/ThemedToaster.tsx`) syncs Sonner toast theme with app theme via `useTheme()` hook.
+
+Toaster config: `bottom-right` (top-right covered the control bar), `closeButton` (X on every toast), `duration={3000}` (global, so errors also last 3s). Toasts are for things the UI doesn't already show: errors, "auto-reload unavailable" notices, and "File updated automatically". Do **not** add toasts for theme changes, opening a file, manual reload or watch toggling — the UI already reflects them.
 
 ### Markdown Rendering Configuration
 
